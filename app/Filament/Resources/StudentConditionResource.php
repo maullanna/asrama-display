@@ -17,7 +17,15 @@ class StudentConditionResource extends Resource
 {
     protected static ?string $model = StudentCondition::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    protected static ?string $navigationLabel = 'Izin & Sakit';
+
+    protected static ?string $modelLabel = 'Izin / Sakit';
+
+    protected static ?string $pluralModelLabel = 'Izin & Sakit';
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

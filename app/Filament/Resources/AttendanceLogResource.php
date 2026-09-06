@@ -17,7 +17,15 @@ class AttendanceLogResource extends Resource
 {
     protected static ?string $model = AttendanceLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-finger-print';
+
+    protected static ?string $navigationLabel = 'Log Absensi';
+
+    protected static ?string $modelLabel = 'Log Absensi';
+
+    protected static ?string $pluralModelLabel = 'Log Absensi';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

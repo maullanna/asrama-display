@@ -17,7 +17,15 @@ class FloorResource extends Resource
 {
     protected static ?string $model = Floor::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+
+    protected static ?string $navigationLabel = 'Lantai';
+
+    protected static ?string $modelLabel = 'Lantai';
+
+    protected static ?string $pluralModelLabel = 'Lantai';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

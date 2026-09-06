@@ -32,18 +32,23 @@ class RoomResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('floor_id')
+                    ->label('Lantai')
                     ->relationship('floor', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('room_number')
+                    ->label('Nomor Kamar')
                     ->required()
                     ->maxLength(20),
                 Forms\Components\TextInput::make('capacity')
+                    ->label('Kapasitas')
                     ->required()
                     ->numeric()
                     ->default(8),
                 Forms\Components\TextInput::make('access_pin')
+                    ->label('PIN Akses Ketua Kamar')
                     ->maxLength(10),
                 Forms\Components\TextInput::make('sort_order')
+                    ->label('Urutan')
                     ->required()
                     ->numeric()
                     ->default(0),
@@ -55,22 +60,29 @@ class RoomResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('floor.name')
+                    ->label('Lantai')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('room_number')
+                    ->label('Nomor Kamar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('capacity')
+                    ->label('Kapasitas')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('access_pin')
+                    ->label('PIN Akses')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('sort_order')
+                    ->label('Urutan')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Diperbarui')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

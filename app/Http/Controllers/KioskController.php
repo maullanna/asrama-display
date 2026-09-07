@@ -34,7 +34,15 @@ class KioskController extends Controller
                 $room->occupancy = $room->occupants->count();
                 $room->students_with_condition = $room->students->whereNotNull('condition')->values();
             }
+
+            // Hanya tampilkan kamar yang sudah ada mahasiswanya.
+            $floor->setRelation('rooms', $floor->rooms->filter(
+                fn ($room) => $room->students->isNotEmpty()
+            )->values());
         }
+
+        // Hanya tampilkan lantai yang punya minimal satu kamar berisi mahasiswa.
+        $floors = $floors->filter(fn ($floor) => $floor->rooms->isNotEmpty())->values();
 
         return view('kiosk', [
             'floors' => $floors,

@@ -20,43 +20,16 @@
                 justify-content: space-between;
                 background: #0b1f4d;
                 color: #fff;
-                padding: 20px 36px;
+                padding: 10px 28px;
             }
 
-            .brand { display: flex; align-items: center; gap: 18px; }
-            .brand svg { width: 44px; height: 44px; }
-            .brand h1 { font-size: 34px; letter-spacing: 1px; }
+            .brand { display: flex; align-items: center; gap: 12px; }
+            .brand svg { width: 26px; height: 26px; }
+            .brand h1 { font-size: 20px; letter-spacing: .5px; }
 
-            .datetime { text-align: right; font-size: 17px; opacity: 0.9; }
-            .datetime div { display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-bottom: 4px; }
+            .datetime { text-align: right; font-size: 14px; opacity: 0.9; line-height: 1.35; }
 
-            .status {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding-left: 28px;
-                border-left: 1px solid rgba(255,255,255,0.25);
-                margin-left: 28px;
-            }
-
-            .status .dot {
-                width: 10px; height: 10px; border-radius: 50%;
-                background: #22c55e;
-                box-shadow: 0 0 0 4px rgba(34,197,94,0.25);
-            }
-
-            .status .badge {
-                background: #16a34a;
-                font-size: 12px;
-                font-weight: 700;
-                letter-spacing: .5px;
-                padding: 3px 10px;
-                border-radius: 999px;
-                margin-top: 2px;
-                display: inline-block;
-            }
-
-            main { padding: 28px 32px; }
+            main { padding: 24px 28px; }
 
             .floor-title {
                 font-size: 20px;
@@ -187,26 +160,14 @@
                 <h1>DORMITORY ROOM CHART</h1>
             </div>
 
-            <div style="display:flex; align-items:center;">
-                <div class="datetime">
-                    <div id="live-date">{{ $today->format('l, d F Y') }}</div>
-                    <div id="live-clock">{{ now()->format('H:i:s') }} WIB</div>
-                </div>
-
-                <div class="status">
-                    <div>
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <span class="dot"></span>
-                            <span style="font-weight:700;">LIVE STATUS</span>
-                        </div>
-                        <span class="badge">SYSTEM ACTIVE</span>
-                    </div>
-                </div>
+            <div class="datetime">
+                <div id="live-date">{{ $today->format('l, d F Y') }}</div>
+                <div id="live-clock">{{ now()->format('H:i:s') }} WIB</div>
             </div>
         </header>
 
         <main>
-            @foreach ($floors as $floor)
+            @forelse ($floors as $floor)
                 <div class="floor-title">{{ str_replace('Lantai', 'Floor', $floor->name) }}</div>
 
                 <div class="room-grid">
@@ -248,9 +209,9 @@
                                                     {{ $student->condition->type === 'sakit' ? 'SICK' : 'LEAVE ' . strtoupper($student->condition->direction ?? '') }}
                                                 </span>
                                                 <div class="condition-info">
-                                                    <div class="name">{{ $student->name }}</div>
+                                                    <div class="name">{{ $student->name }} · {{ $student->student_code }}</div>
                                                     @if ($student->condition->note)
-                                                        <div class="note">{{ $student->condition->note }}</div>
+                                                        <div class="note">{{ \Illuminate\Support\Str::limit($student->condition->note, 32) }}</div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -261,7 +222,11 @@
                         </div>
                     @endforeach
                 </div>
-            @endforeach
+            @empty
+                <div style="text-align:center; color:#94a3b8; font-size:18px; padding:80px 0;">
+                    No students assigned yet.
+                </div>
+            @endforelse
         </main>
 
         <script>

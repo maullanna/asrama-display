@@ -38,24 +38,24 @@
             main { padding: 24px 28px; }
 
             .floor-title {
-                font-size: 20px;
+                font-size: 15px;
                 font-weight: 700;
                 color: #0b1f4d;
-                margin: 8px 0 16px;
+                margin: 4px 0 10px;
             }
 
             .room-grid {
                 display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-                margin-bottom: 28px;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 12px;
+                margin-bottom: 18px;
             }
 
             .room-card {
                 background: #fff;
                 border-radius: 6px;
                 overflow: hidden;
-                box-shadow: 0 2px 10px rgba(11,31,77,0.08);
+                box-shadow: 0 1px 6px rgba(11,31,77,0.08);
             }
 
             .room-header {
@@ -64,31 +64,31 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 12px 16px;
+                padding: 7px 10px;
                 font-weight: 700;
-                font-size: 16px;
+                font-size: 12px;
             }
 
-            .room-body { padding: 14px 16px 18px; }
+            .room-body { padding: 8px 10px 10px; }
 
             .pill {
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
                 border-radius: 4px;
-                padding: 8px 12px;
+                padding: 5px 8px;
                 font-weight: 700;
-                font-size: 14px;
-                margin-bottom: 12px;
+                font-size: 11px;
+                margin-bottom: 8px;
             }
 
             .pill-status { background: #e9f9ef; color: #16a34a; }
 
             .students {
                 display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 10px;
-                margin-bottom: 12px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                margin-bottom: 6px;
             }
 
             .student { text-align: center; min-width: 0; }
@@ -96,7 +96,7 @@
             .avatar {
                 width: 100%;
                 aspect-ratio: 1;
-                border-radius: 6px;
+                border-radius: 5px;
                 object-fit: cover;
                 background: #cbd5e1;
                 display: flex;
@@ -104,37 +104,37 @@
                 justify-content: center;
                 color: #fff;
                 font-weight: 700;
-                font-size: 15px;
-                margin-bottom: 4px;
+                font-size: 11px;
+                margin-bottom: 3px;
             }
 
             .student .name {
-                font-size: 11px;
+                font-size: 9.5px;
                 font-weight: 600;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
 
-            .student .time { font-size: 10.5px; color: #16a34a; font-weight: 600; }
+            .student .time { font-size: 9px; color: #16a34a; font-weight: 600; }
 
             .empty-state {
                 text-align: center;
                 color: #94a3b8;
-                font-size: 13px;
-                padding: 8px 0 4px;
+                font-size: 11px;
+                padding: 6px 0 3px;
             }
 
-            .conditions { border-top: 1px solid #eef1f6; margin-top: 8px; padding-top: 10px; }
+            .conditions { border-top: 1px solid #eef1f6; margin-top: 6px; padding-top: 6px; }
 
             .condition-row {
                 display: flex;
                 align-items: center;
-                gap: 8px;
-                padding: 6px 8px;
-                border-radius: 6px;
-                margin-bottom: 6px;
-                font-size: 12px;
+                gap: 6px;
+                padding: 4px 6px;
+                border-radius: 5px;
+                margin-bottom: 4px;
+                font-size: 11px;
             }
 
             .condition-row.sakit { background: #fdeceb; }
@@ -142,9 +142,9 @@
 
             .condition-badge {
                 border-radius: 4px;
-                padding: 2px 7px;
+                padding: 2px 6px;
                 font-weight: 700;
-                font-size: 10.5px;
+                font-size: 9px;
                 color: #fff;
                 white-space: nowrap;
             }
@@ -153,8 +153,8 @@
             .condition-badge.izin { background: #d97706; }
 
             .condition-info { min-width: 0; }
-            .condition-info .name { font-weight: 700; font-size: 12px; color: #1b1f2a; }
-            .condition-info .note { font-size: 11px; color: #64748b; }
+            .condition-info .name { font-weight: 700; font-size: 10.5px; color: #1b1f2a; }
+            .condition-info .note { font-size: 9.5px; color: #64748b; }
         </style>
     </head>
     <body>

@@ -6,11 +6,12 @@ use App\Models\Floor;
 use App\Models\Room;
 use App\Models\Student;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class StudentCsvImporter
+class StudentImporter
 {
     /**
-     * Import mahasiswa dari file CSV.
+     * Import mahasiswa dari file Excel (.xlsx / .xls).
      *
      * Kolom (baris pertama = header, urutan bebas, tidak case-sensitive):
      *   nim, nama, pin, lantai, kamar, ketua
@@ -31,33 +32,32 @@ class StudentCsvImporter
         $skipped = 0;
         $errors = [];
 
-        $handle = fopen($path, 'r');
-        if ($handle === false) {
-            return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => ['File tidak bisa dibaca.']];
+        try {
+            $reader = IOFactory::createReaderForFile($path);
+            $reader->setReadDataOnly(true);
+            $rows = $reader->load($path)->getActiveSheet()->toArray(null, true, false, false);
+        } catch (\Throwable $e) {
+            return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => ['File tidak bisa dibaca sebagai Excel.']];
         }
 
-        // Baca header, normalisasi nama kolom.
-        $header = fgetcsv($handle);
-        if ($header === false) {
-            fclose($handle);
-
+        if (empty($rows)) {
             return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => ['File kosong.']];
         }
-        $header = array_map(fn ($h) => Str::of($h)->trim()->lower()->replace(['ï»¿'], '')->toString(), $header);
+
+        $header = array_map(fn ($h) => Str::of((string) $h)->trim()->lower()->toString(), $rows[0]);
         $idx = array_flip($header);
 
         if (! isset($idx['nim'], $idx['nama'])) {
-            fclose($handle);
-
-            return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => ['Kolom wajib "nim" dan "nama" tidak ditemukan di header.']];
+            return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => ['Kolom wajib "nim" dan "nama" tidak ditemukan di baris header.']];
         }
 
         $floorCache = [];
         $roomCache = [];
-        $line = 1;
+        $total = count($rows);
 
-        while (($row = fgetcsv($handle)) !== false) {
-            $line++;
+        for ($i = 1; $i < $total; $i++) {
+            $row = $rows[$i];
+            $line = $i + 1;
 
             $get = fn (string $key) => isset($idx[$key], $row[$idx[$key]]) ? trim((string) $row[$idx[$key]]) : '';
 
@@ -101,7 +101,7 @@ class StudentCsvImporter
                 $roomId = $room->id;
             }
 
-            $student = Student::where('student_code', $nim)->first();
+            $exists = Student::where('student_code', $nim)->exists();
 
             Student::updateOrCreate(
                 ['student_code' => $nim],
@@ -114,10 +114,8 @@ class StudentCsvImporter
                 ]
             );
 
-            $student ? $updated++ : $created++;
+            $exists ? $updated++ : $created++;
         }
-
-        fclose($handle);
 
         return compact('created', 'updated', 'skipped', 'errors');
     }

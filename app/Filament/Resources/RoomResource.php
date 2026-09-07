@@ -34,22 +34,8 @@ class RoomResource extends Resource
                 Forms\Components\Select::make('floor_id')
                     ->label('Lantai')
                     ->relationship('floor', 'name')
-                    ->searchable()
                     ->preload()
-                    ->required()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Nama Lantai')
-                            ->required()
-                            ->maxLength(255),
-                    ])
-                    ->createOptionUsing(function (array $data): int {
-                        return \App\Models\Floor::create([
-                            'name' => $data['name'],
-                            'slug' => \Illuminate\Support\Str::slug($data['name']),
-                            'sort_order' => (int) (\App\Models\Floor::max('sort_order') ?? 0) + 1,
-                        ])->getKey();
-                    }),
+                    ->required(),
                 Forms\Components\TextInput::make('room_number')
                     ->label('Nomor Kamar')
                     ->required()

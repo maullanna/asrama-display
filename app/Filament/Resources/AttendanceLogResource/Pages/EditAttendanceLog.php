@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\AttendanceLogResource\Pages;
 
+use App\Filament\Concerns\RedirectsToIndex;
 use App\Filament\Resources\AttendanceLogResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditAttendanceLog extends EditRecord
 {
+    use RedirectsToIndex;
+
     protected static string $resource = AttendanceLogResource::class;
 
     protected function getHeaderActions(): array

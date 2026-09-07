@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Floor;
 use Illuminate\Support\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class KioskController extends Controller
 {
     public function index()
     {
         $today = Carbon::today();
+
+        // QR menuju form laporan ketua kamar.
+        $reportQr = QrCode::format('svg')->size(96)->margin(0)->errorCorrection('M')->generate(route('report.show'));
 
         $floors = Floor::with([
             'rooms' => fn ($query) => $query->orderBy('sort_order'),
@@ -47,6 +51,7 @@ class KioskController extends Controller
         return view('kiosk', [
             'floors' => $floors,
             'today' => $today,
+            'reportQr' => $reportQr,
         ]);
     }
 }

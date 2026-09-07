@@ -27,7 +27,13 @@
             .brand svg { width: 26px; height: 26px; }
             .brand h1 { font-size: 20px; letter-spacing: .5px; }
 
+            .header-right { display: flex; align-items: center; gap: 18px; }
             .datetime { text-align: right; font-size: 14px; opacity: 0.9; line-height: 1.35; }
+
+            .qr-box { display: flex; align-items: center; gap: 10px; padding-left: 18px; border-left: 1px solid rgba(255,255,255,0.25); }
+            .qr { background: #fff; padding: 5px; border-radius: 6px; width: 58px; height: 58px; display: flex; }
+            .qr svg { width: 100%; height: 100%; display: block; }
+            .qr-label { font-size: 11px; line-height: 1.3; opacity: 0.9; }
 
             main { padding: 24px 28px; }
 
@@ -160,9 +166,15 @@
                 <h1>DORMITORY ROOM CHART</h1>
             </div>
 
-            <div class="datetime">
-                <div id="live-date">{{ $today->format('l, d F Y') }}</div>
-                <div id="live-clock">{{ now()->format('H:i:s') }} WIB</div>
+            <div class="header-right">
+                <div class="datetime">
+                    <div id="live-date">{{ $today->format('l, d F Y') }}</div>
+                    <div id="live-clock">{{ now()->format('H:i:s') }} WIB</div>
+                </div>
+                <div class="qr-box">
+                    <div class="qr">{!! $reportQr !!}</div>
+                    <div class="qr-label">Scan to report<br>sick / on-duty</div>
+                </div>
             </div>
         </header>
 

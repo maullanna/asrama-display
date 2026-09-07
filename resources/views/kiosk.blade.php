@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=1920, initial-scale=1">
         <meta http-equiv="refresh" content="60">
-        <title>Bagan Kamar Asrama</title>
+        <title>Dormitory Room Chart</title>
         <style>
             * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -184,12 +184,12 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <h1>BAGAN KAMAR ASRAMA</h1>
+                <h1>DORMITORY ROOM CHART</h1>
             </div>
 
             <div style="display:flex; align-items:center;">
                 <div class="datetime">
-                    <div id="live-date">{{ $today->translatedFormat('l, d F Y') }}</div>
+                    <div id="live-date">{{ $today->format('l, d F Y') }}</div>
                     <div id="live-clock">{{ now()->format('H:i:s') }} WIB</div>
                 </div>
 
@@ -199,7 +199,7 @@
                             <span class="dot"></span>
                             <span style="font-weight:700;">LIVE STATUS</span>
                         </div>
-                        <span class="badge">SISTEM AKTIF</span>
+                        <span class="badge">SYSTEM ACTIVE</span>
                     </div>
                 </div>
             </div>
@@ -207,23 +207,23 @@
 
         <main>
             @foreach ($floors as $floor)
-                <div class="floor-title">{{ $floor->name }}</div>
+                <div class="floor-title">{{ str_replace('Lantai', 'Floor', $floor->name) }}</div>
 
                 <div class="room-grid">
                     @foreach ($floor->rooms as $room)
                         <div class="room-card">
                             <div class="room-header">
-                                <span>KAMAR {{ $room->room_number }}</span>
-                                <span>{{ $room->capacity }} ORANG</span>
+                                <span>ROOM {{ $room->room_number }}</span>
+                                <span>{{ $room->capacity }} PEOPLE</span>
                             </div>
 
                             <div class="room-body">
                                 <div class="pill pill-status">
-                                    <span>OKUPANSI {{ $room->occupancy }}/{{ $room->capacity }}</span>
+                                    <span>OCCUPANCY {{ $room->occupancy }}/{{ $room->capacity }}</span>
                                 </div>
 
                                 @if ($room->occupants->isEmpty())
-                                    <div class="empty-state">Belum ada yang mengisi kamar</div>
+                                    <div class="empty-state">No one checked in yet</div>
                                 @else
                                     <div class="students">
                                         @foreach ($room->occupants as $student)
@@ -245,7 +245,7 @@
                                         @foreach ($room->students_with_condition as $student)
                                             <div class="condition-row {{ $student->condition->type }}">
                                                 <span class="condition-badge {{ $student->condition->type }}">
-                                                    {{ $student->condition->type === 'sakit' ? 'SAKIT' : 'IZIN ' . strtoupper($student->condition->direction ?? '') }}
+                                                    {{ $student->condition->type === 'sakit' ? 'SICK' : 'LEAVE ' . strtoupper($student->condition->direction ?? '') }}
                                                 </span>
                                                 <div class="condition-info">
                                                     <div class="name">{{ $student->name }}</div>

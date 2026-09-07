@@ -14,6 +14,18 @@ Route::get('/kiosk-rooms', [KioskController::class, 'rooms'])->name('kiosk.rooms
 Route::get('/lapor', [ReportController::class, 'show'])->name('report.show');
 Route::post('/lapor', [ReportController::class, 'store'])->name('report.store');
 
+// Template CSV untuk import mahasiswa (hanya untuk admin yang login)
+Route::get('/import-template-mahasiswa.csv', function () {
+    $csv = "nim,nama,pin,lantai,kamar,ketua\n"
+        ."2026001,Nama Mahasiswa Satu,2026001,1,101,1\n"
+        ."2026002,Nama Mahasiswa Dua,2026002,1,101,0\n";
+
+    return response($csv, 200, [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="template-mahasiswa.csv"',
+    ]);
+})->middleware('auth')->name('students.import.template');
+
 // Handshake: mesin meminta konfigurasi saat pertama terhubung
 Route::get('/iclock/cdata', [AdmsController::class, 'handshake']);
 

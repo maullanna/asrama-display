@@ -27,6 +27,9 @@ class FloorResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    // Menu Lantai disembunyikan dari sidebar; lantai dikelola lewat form Kamar.
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Form $form): Form
     {
         return $form

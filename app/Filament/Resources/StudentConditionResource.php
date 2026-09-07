@@ -48,8 +48,8 @@ class StudentConditionResource extends Resource
                 Forms\Components\Select::make('direction')
                     ->label('Arah (khusus izin)')
                     ->options([
-                        'ci' => 'Check-in (CI)',
-                        'co' => 'Check-out (CO)',
+                        'ci' => 'Masuk (CI)',
+                        'co' => 'Keluar (CO)',
                     ])
                     ->visible(fn (Forms\Get $get) => $get('type') === 'izin'),
                 Forms\Components\DatePicker::make('start_date')
@@ -80,7 +80,12 @@ class StudentConditionResource extends Resource
                     ->badge()
                     ->color(fn (string $state) => $state === 'sakit' ? 'danger' : 'info'),
                 Tables\Columns\TextColumn::make('direction')
-                    ->label('Arah'),
+                    ->label('Arah')
+                    ->formatStateUsing(fn (?string $state) => match ($state) {
+                        'ci' => 'Masuk',
+                        'co' => 'Keluar',
+                        default => '-',
+                    }),
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Mulai')
                     ->date()

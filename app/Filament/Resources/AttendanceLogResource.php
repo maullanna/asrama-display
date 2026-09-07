@@ -49,15 +49,15 @@ class AttendanceLogResource extends Resource
                 Forms\Components\Select::make('direction')
                     ->label('Arah')
                     ->options([
-                        'ci' => 'Check-in (CI)',
-                        'co' => 'Check-out (CO)',
+                        'ci' => 'Masuk (CI)',
+                        'co' => 'Keluar (CO)',
                     ])
                     ->default('ci')
                     ->required(),
                 Forms\Components\Select::make('method')
                     ->label('Metode')
                     ->options([
-                        'fingerprint' => 'Fingerprint',
+                        'fingerprint' => 'Sidik Jari',
                         'qr' => 'QR',
                         'manual' => 'Manual',
                     ])
@@ -84,9 +84,16 @@ class AttendanceLogResource extends Resource
                 Tables\Columns\TextColumn::make('direction')
                     ->label('Arah')
                     ->badge()
+                    ->formatStateUsing(fn (string $state) => $state === 'ci' ? 'Masuk' : 'Keluar')
                     ->color(fn (string $state) => $state === 'ci' ? 'success' : 'warning'),
                 Tables\Columns\TextColumn::make('method')
                     ->label('Metode')
+                    ->formatStateUsing(fn (?string $state) => match ($state) {
+                        'fingerprint' => 'Sidik Jari',
+                        'qr' => 'QR',
+                        'manual' => 'Manual',
+                        default => $state,
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
@@ -104,8 +111,8 @@ class AttendanceLogResource extends Resource
                 Tables\Filters\SelectFilter::make('direction')
                     ->label('Arah')
                     ->options([
-                        'ci' => 'Check-in (CI)',
-                        'co' => 'Check-out (CO)',
+                        'ci' => 'Masuk (CI)',
+                        'co' => 'Keluar (CO)',
                     ]),
             ])
             ->actions([

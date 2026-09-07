@@ -4,16 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Floor;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class KioskController extends Controller
 {
     public function index()
     {
-        $today = Carbon::today();
-
         // QR menuju form laporan ketua kamar.
         $reportQr = QrCode::format('svg')->size(96)->margin(0)->errorCorrection('M')->generate(route('report.show'));
+
+        return view('kiosk', [
+            'floors' => $this->buildFloors(),
+            'today' => Carbon::today(),
+            'reportQr' => $reportQr,
+        ]);
+    }
+
+    /**
+     * Endpoint untuk polling AJAX: render ulang kartu kamar saja (tanpa layout).
+     */
+    public function rooms()
+    {
+        return view('partials.kiosk-rooms', [
+            'floors' => $this->buildFloors(),
+        ]);
+    }
+
+    /**
+     * Bangun daftar lantai -> kamar -> penghuni/kondisi untuk hari ini.
+     * Hanya menyertakan kamar yang ada mahasiswanya dan lantai yang ada kamarnya.
+     */
+    private function buildFloors(): Collection
+    {
+        $today = Carbon::today();
 
         $floors = Floor::with([
             'rooms' => fn ($query) => $query->orderBy('sort_order'),
@@ -46,12 +70,6 @@ class KioskController extends Controller
         }
 
         // Hanya tampilkan lantai yang punya minimal satu kamar berisi mahasiswa.
-        $floors = $floors->filter(fn ($floor) => $floor->rooms->isNotEmpty())->values();
-
-        return view('kiosk', [
-            'floors' => $floors,
-            'today' => $today,
-            'reportQr' => $reportQr,
-        ]);
+        return $floors->filter(fn ($floor) => $floor->rooms->isNotEmpty())->values();
     }
 }

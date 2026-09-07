@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [KioskController::class, 'index']);
 
+// Endpoint polling AJAX untuk update kartu kamar tanpa reload halaman
+Route::get('/kiosk-rooms', [KioskController::class, 'rooms'])->name('kiosk.rooms');
+
 // Form laporan kondisi anggota oleh ketua kamar (diakses via QR di kiosk)
 Route::get('/lapor', [ReportController::class, 'show'])->name('report.show');
 Route::post('/lapor', [ReportController::class, 'store'])->name('report.store');

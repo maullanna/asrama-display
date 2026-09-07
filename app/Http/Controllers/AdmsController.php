@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AttendanceIngestor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -29,12 +30,22 @@ class AdmsController extends Controller
         )->header('Content-Type', 'text/plain');
     }
 
-    public function data(Request $request)
+    public function data(Request $request, AttendanceIngestor $ingestor)
     {
+        $query = $request->query();
+        $body = $request->getContent();
+
         Log::channel('adms')->info('DATA', [
-            'query' => $request->query(),
-            'body' => $request->getContent(),
+            'query' => $query,
+            'body' => $body,
         ]);
+
+        // Hanya tabel ATTLOG (data absensi) yang di-parsing ke database.
+        // Tabel lain (OPERLOG, template sidik jari) cukup dicatat di log.
+        if (($query['table'] ?? null) === 'ATTLOG') {
+            $processed = $ingestor->ingestAttlog($body, $query['SN'] ?? null);
+            Log::channel('adms')->info('ATTLOG diproses', ['baris' => $processed]);
+        }
 
         return response('OK', 200)->header('Content-Type', 'text/plain');
     }

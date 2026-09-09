@@ -215,8 +215,8 @@
             // Auto-scroll pelan untuk TV: jeda di atas -> turun pelan -> jeda di bawah -> naik pelan.
             // Satu siklus ~3 menit (tergantung tinggi konten). Semua bisa diatur di sini.
             const AUTOSCROLL = {
-                speedDown: 9,      // kecepatan turun (px/detik) — makin kecil makin pelan
-                speedUp: 12,       // kecepatan balik ke atas (px/detik) — juga pelan
+                speedDown: 10,     // kecepatan turun (px/detik) — makin kecil makin pelan
+                speedUp: 10,       // kecepatan balik ke atas (px/detik) — sama dengan turun
                 pauseTop: 10000,   // jeda diam di atas (ms)
                 pauseBottom: 6000  // jeda diam di bawah (ms)
             };

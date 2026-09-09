@@ -46,9 +46,9 @@
 
             .room-grid {
                 display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 12px;
-                margin-bottom: 18px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 14px;
+                margin-bottom: 20px;
             }
 
             .room-card {
@@ -112,14 +112,14 @@
             .student.status-present .avatar { border-color: #16a34a; }
 
             .student .name {
-                font-size: 9.5px;
+                font-size: 11px;
                 font-weight: 600;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
 
-            .student .time { font-size: 9px; font-weight: 700; color: #94a3b8; }
+            .student .time { font-size: 10px; font-weight: 700; color: #94a3b8; }
             .student.status-present .time { color: #16a34a; }
             .student.status-sakit .time { color: #dc2626; }
             .student.status-izin .time { color: #d97706; }
@@ -211,6 +211,52 @@
                 } catch (e) { /* abaikan blip jaringan, coba lagi siklus berikutnya */ }
             }
             setInterval(refreshRooms, 10000);
+
+            // Auto-scroll pelan untuk TV: jeda di atas -> turun pelan -> jeda di bawah -> balik atas.
+            const AUTOSCROLL = {
+                speed: 32,        // kecepatan turun (px/detik) — makin kecil makin pelan
+                pauseTop: 4000,   // jeda di atas (ms)
+                pauseBottom: 4000 // jeda di bawah (ms)
+            };
+
+            const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+            function hasOverflow() {
+                return document.body.scrollHeight > window.innerHeight + 4;
+            }
+
+            function scrollDownSlow() {
+                return new Promise((resolve) => {
+                    let last = null;
+                    function step(ts) {
+                        if (last === null) last = ts;
+                        const dt = (ts - last) / 1000;
+                        last = ts;
+                        window.scrollBy(0, AUTOSCROLL.speed * dt);
+                        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1) {
+                            resolve();
+                        } else {
+                            requestAnimationFrame(step);
+                        }
+                    }
+                    requestAnimationFrame(step);
+                });
+            }
+
+            async function autoScrollLoop() {
+                // Tunggu render awal.
+                await sleep(1500);
+                while (true) {
+                    await sleep(AUTOSCROLL.pauseTop);
+                    if (hasOverflow()) {
+                        await scrollDownSlow();
+                        await sleep(AUTOSCROLL.pauseBottom);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        await sleep(2000);
+                    }
+                }
+            }
+            autoScrollLoop();
         </script>
     </body>
 </html>

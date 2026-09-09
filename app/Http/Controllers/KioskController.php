@@ -14,10 +14,13 @@ class KioskController extends Controller
         // QR menuju form laporan ketua kamar.
         $reportQr = QrCode::format('svg')->size(96)->margin(0)->errorCorrection('M')->generate(route('report.show'));
 
+        $floors = $this->buildFloors();
+
         return view('kiosk', [
-            'floors' => $this->buildFloors(),
+            'floors' => $floors,
             'today' => Carbon::today(),
             'reportQr' => $reportQr,
+            'abnormal' => $this->abnormalList($floors),
         ]);
     }
 
@@ -26,9 +29,43 @@ class KioskController extends Controller
      */
     public function rooms()
     {
+        $floors = $this->buildFloors();
+
         return view('partials.kiosk-rooms', [
-            'floors' => $this->buildFloors(),
+            'floors' => $floors,
+            'abnormal' => $this->abnormalList($floors),
         ]);
+    }
+
+    /**
+     * Daftar mahasiswa "abnormal": setelah jam batas CI, masih berstatus 'absent'
+     * (belum CI hari ini & tanpa keterangan sakit/izin). Sebelum jam batas => kosong.
+     *
+     * @return array<int, array{name:string, code:string, room:string}>
+     */
+    private function abnormalList(Collection $floors): array
+    {
+        $cutoff = Carbon::today()->setTimeFromTimeString(config('asrama.ci_cutoff', '21:00'));
+        if (Carbon::now()->lt($cutoff)) {
+            return [];
+        }
+
+        $abnormal = [];
+        foreach ($floors as $floor) {
+            foreach ($floor->rooms as $room) {
+                foreach ($room->students as $student) {
+                    if ($student->status === 'absent') {
+                        $abnormal[] = [
+                            'name' => $student->name,
+                            'code' => $student->student_code,
+                            'room' => str_replace('Lantai', 'Floor', $floor->name).' - '.$room->room_number,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $abnormal;
     }
 
     /**

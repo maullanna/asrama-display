@@ -1,3 +1,4 @@
+<script type="application/json" id="abnormal-json">@json($abnormal ?? [])</script>
 @forelse ($floors as $floor)
     <div class="floor-title">{{ str_replace('Lantai', 'Floor', $floor->name) }}</div>
 

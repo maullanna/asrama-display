@@ -161,6 +161,50 @@
             .condition-info { min-width: 0; }
             .condition-info .name { font-weight: 700; font-size: 10.5px; color: #1b1f2a; }
             .condition-info .note { font-size: 9.5px; color: #64748b; }
+
+            /* ===== Alert Abnormality ===== */
+            /* Bar merah tetap di bawah layar saat ada mahasiswa belum CI. */
+            #abnormal-bar {
+                display: none;
+                position: fixed;
+                left: 0; right: 0; bottom: 0;
+                z-index: 50;
+                background: #dc2626;
+                color: #fff;
+                padding: 12px 24px;
+                align-items: center;
+                gap: 14px;
+                font-size: 16px;
+                font-weight: 700;
+                box-shadow: 0 -4px 16px rgba(0,0,0,0.2);
+                animation: abnormalPulse 1.4s ease-in-out infinite;
+            }
+            #abnormal-bar .warn { font-size: 22px; flex-shrink: 0; }
+            #abnormal-bar .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            @keyframes abnormalPulse {
+                0%, 100% { background: #dc2626; }
+                50% { background: #b91c1c; }
+            }
+
+            /* Flash besar di tengah, muncul berkala untuk menarik perhatian. */
+            #abnormal-flash {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 60;
+                background: rgba(153,27,27,0.94);
+                color: #fff;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 18px;
+                text-align: center;
+            }
+            #abnormal-flash.show { display: flex; animation: flashIn .3s ease; }
+            #abnormal-flash .big { font-size: 64px; }
+            #abnormal-flash .head { font-size: 40px; font-weight: 800; letter-spacing: 1px; }
+            #abnormal-flash .sub { font-size: 22px; opacity: .9; max-width: 80vw; }
+            @keyframes flashIn { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
         </style>
     </head>
     <body>
@@ -188,6 +232,17 @@
             @include('partials.kiosk-rooms')
         </main>
 
+        <!-- Alert abnormality (mahasiswa belum CI setelah jam batas) -->
+        <div id="abnormal-bar">
+            <span class="warn">&#9888;</span>
+            <span class="txt" id="abnormal-text"></span>
+        </div>
+        <div id="abnormal-flash">
+            <div class="big">&#9888;</div>
+            <div class="head" id="abnormal-flash-head"></div>
+            <div class="sub" id="abnormal-flash-sub"></div>
+        </div>
+
         <script>
             // Jam berjalan (client-side).
             function tick() {
@@ -201,6 +256,29 @@
             }
             setInterval(tick, 1000);
 
+            // Baca daftar abnormal dari JSON yang disisipkan partial.
+            function readAbnormal() {
+                const el = document.getElementById('abnormal-json');
+                if (!el) return [];
+                try { return JSON.parse(el.textContent || '[]'); } catch (e) { return []; }
+            }
+
+            // Update bar merah bawah sesuai daftar abnormal terbaru.
+            function updateAbnormalBar() {
+                const list = readAbnormal();
+                const bar = document.getElementById('abnormal-bar');
+                if (!list.length) {
+                    bar.style.display = 'none';
+                    document.body.style.paddingBottom = '';
+                    return;
+                }
+                const names = list.map(s => `${s.name} (${s.room})`).join('   •   ');
+                document.getElementById('abnormal-text').textContent =
+                    `BELUM CI/CO — ${list.length} mahasiswa: ${names}`;
+                bar.style.display = 'flex';
+                document.body.style.paddingBottom = '64px';
+            }
+
             // Polling halus tiap 10 detik: ambil kartu kamar terbaru, ganti tanpa reload.
             async function refreshRooms() {
                 try {
@@ -208,9 +286,24 @@
                     if (!res.ok) return;
                     const html = await res.text();
                     document.getElementById('rooms').innerHTML = html;
+                    updateAbnormalBar();
                 } catch (e) { /* abaikan blip jaringan, coba lagi siklus berikutnya */ }
             }
             setInterval(refreshRooms, 10000);
+            updateAbnormalBar(); // saat load awal
+
+            // Flash besar berkala tiap 30 detik bila ada abnormal (muncul ~6 detik).
+            setInterval(() => {
+                const list = readAbnormal();
+                if (!list.length) return;
+                const flash = document.getElementById('abnormal-flash');
+                document.getElementById('abnormal-flash-head').textContent =
+                    `${list.length} MAHASISWA BELUM ADA STATUS CI/CO`;
+                document.getElementById('abnormal-flash-sub').textContent =
+                    list.map(s => s.name).join(', ');
+                flash.classList.add('show');
+                setTimeout(() => flash.classList.remove('show'), 6000);
+            }, 30000);
 
             // Auto-scroll pelan untuk TV: jeda di atas -> turun pelan -> jeda di bawah -> naik pelan.
             // Satu siklus ~3 menit (tergantung tinggi konten). Semua bisa diatur di sini.

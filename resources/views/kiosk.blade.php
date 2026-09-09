@@ -96,17 +96,20 @@
             .avatar {
                 width: 100%;
                 aspect-ratio: 1;
-                border-radius: 5px;
+                border-radius: 6px;
                 object-fit: cover;
-                background: #cbd5e1;
+                background: #eef1f6;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #fff;
-                font-weight: 700;
-                font-size: 11px;
+                color: #94a3b8;
                 margin-bottom: 3px;
+                border: 2.5px solid #cbd5e1;   /* default: belum fingerprint (abu-abu) */
             }
+            .avatar svg { width: 60%; height: 60%; }
+
+            /* Sudah fingerprint (hadir) -> border hijau */
+            .student.status-present .avatar { border-color: #16a34a; }
 
             .student .name {
                 font-size: 9.5px;
@@ -116,7 +119,10 @@
                 text-overflow: ellipsis;
             }
 
-            .student .time { font-size: 9px; color: #16a34a; font-weight: 600; }
+            .student .time { font-size: 9px; font-weight: 700; color: #94a3b8; }
+            .student.status-present .time { color: #16a34a; }
+            .student.status-sakit .time { color: #dc2626; }
+            .student.status-izin .time { color: #d97706; }
 
             .empty-state {
                 text-align: center;

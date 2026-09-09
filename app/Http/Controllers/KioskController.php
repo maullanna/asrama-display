@@ -55,11 +55,14 @@ class KioskController extends Controller
 
                     $student->condition = $condition;
                     $student->ci_time = $lastCi?->scanned_at;
-                    $student->is_occupying = (! $condition) && $lastCi !== null;
+
+                    // Status: kondisi (sakit/izin) menang; lalu hadir (sudah CI); sisanya belum absen.
+                    $student->status = $condition
+                        ? $condition->type              // 'sakit' | 'izin'
+                        : ($lastCi ? 'present' : 'absent');
                 }
 
-                $room->occupants = $room->students->where('is_occupying', true)->values();
-                $room->occupancy = $room->occupants->count();
+                $room->occupancy = $room->students->where('status', 'present')->count();
                 $room->students_with_condition = $room->students->whereNotNull('condition')->values();
             }
 

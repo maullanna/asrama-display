@@ -14,23 +14,30 @@
                         <span>OCCUPANCY {{ $room->occupancy }}/{{ $room->capacity }}</span>
                     </div>
 
-                    @if ($room->occupants->isEmpty())
-                        <div class="empty-state">No one checked in yet</div>
-                    @else
-                        <div class="students">
-                            @foreach ($room->occupants as $student)
-                                <div class="student">
-                                    @if ($student->photo_path)
-                                        <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
-                                    @else
-                                        <div class="avatar">{{ collect(explode(' ', $student->name))->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->implode('') }}</div>
-                                    @endif
-                                    <div class="name">{{ $student->name }}</div>
-                                    <div class="time">CI: {{ $student->ci_time?->format('H:i') }}</div>
+                    <div class="students">
+                        @foreach ($room->students as $student)
+                            <div class="student status-{{ $student->status }}">
+                                @if ($student->photo_path)
+                                    <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
+                                @else
+                                    <div class="avatar">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.34 0-10 1.67-10 5v2h20v-2c0-3.33-6.66-5-10-5z"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                                <div class="name">{{ $student->name }}</div>
+                                <div class="time">
+                                    @switch($student->status)
+                                        @case('present') CI {{ $student->ci_time?->format('H:i') }} @break
+                                        @case('sakit') SICK @break
+                                        @case('izin') LEAVE @break
+                                        @default &mdash;
+                                    @endswitch
                                 </div>
-                            @endforeach
-                        </div>
-                    @endif
+                            </div>
+                        @endforeach
+                    </div>
 
                     @if ($room->students_with_condition->isNotEmpty())
                         <div class="conditions">
@@ -40,7 +47,7 @@
                                         {{ $student->condition->type === 'sakit' ? 'SICK' : 'LEAVE '.strtoupper($student->condition->direction ?? '') }}
                                     </span>
                                     <div class="condition-info">
-                                        <div class="name">{{ $student->name }} · {{ $student->student_code }}</div>
+                                        <div class="name">{{ $student->name }} &middot; {{ $student->student_code }}</div>
                                         @if ($student->condition->note)
                                             <div class="note">{{ \Illuminate\Support\Str::limit($student->condition->note, 32) }}</div>
                                         @endif

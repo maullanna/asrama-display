@@ -212,11 +212,13 @@
             }
             setInterval(refreshRooms, 10000);
 
-            // Auto-scroll pelan untuk TV: jeda di atas -> turun pelan -> jeda di bawah -> balik atas.
+            // Auto-scroll pelan untuk TV: jeda di atas -> turun pelan -> jeda di bawah -> naik pelan.
+            // Satu siklus ~3 menit (tergantung tinggi konten). Semua bisa diatur di sini.
             const AUTOSCROLL = {
-                speed: 32,        // kecepatan turun (px/detik) — makin kecil makin pelan
-                pauseTop: 4000,   // jeda di atas (ms)
-                pauseBottom: 4000 // jeda di bawah (ms)
+                speedDown: 9,      // kecepatan turun (px/detik) — makin kecil makin pelan
+                speedUp: 12,       // kecepatan balik ke atas (px/detik) — juga pelan
+                pauseTop: 10000,   // jeda diam di atas (ms)
+                pauseBottom: 6000  // jeda diam di bawah (ms)
             };
 
             const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -225,15 +227,18 @@
                 return document.body.scrollHeight > window.innerHeight + 4;
             }
 
-            function scrollDownSlow() {
+            // direction: 1 = turun, -1 = naik. Bergerak pelan sampai ujung.
+            function scrollSlow(direction, speed) {
                 return new Promise((resolve) => {
                     let last = null;
                     function step(ts) {
                         if (last === null) last = ts;
                         const dt = (ts - last) / 1000;
                         last = ts;
-                        window.scrollBy(0, AUTOSCROLL.speed * dt);
-                        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1) {
+                        window.scrollBy(0, direction * speed * dt);
+                        const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1;
+                        const atTop = window.scrollY <= 0;
+                        if ((direction > 0 && atBottom) || (direction < 0 && atTop)) {
                             resolve();
                         } else {
                             requestAnimationFrame(step);
@@ -244,15 +249,13 @@
             }
 
             async function autoScrollLoop() {
-                // Tunggu render awal.
-                await sleep(1500);
+                await sleep(1500); // tunggu render awal
                 while (true) {
                     await sleep(AUTOSCROLL.pauseTop);
                     if (hasOverflow()) {
-                        await scrollDownSlow();
+                        await scrollSlow(1, AUTOSCROLL.speedDown);   // turun pelan
                         await sleep(AUTOSCROLL.pauseBottom);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        await sleep(2000);
+                        await scrollSlow(-1, AUTOSCROLL.speedUp);    // naik pelan
                     }
                 }
             }

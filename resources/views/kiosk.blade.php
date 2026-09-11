@@ -30,7 +30,7 @@
             }
 
             .brand { display: flex; align-items: center; gap: 12px; }
-            .brand svg { width: 26px; height: 26px; }
+            .brand-logo { width: 36px; height: 36px; display: block; }
             .brand h1 { font-size: 20px; letter-spacing: .5px; }
 
             .header-right { display: flex; align-items: center; gap: 18px; }
@@ -253,9 +253,7 @@
     <body>
         <header>
             <div class="brand">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <img src="{{ asset('favicon.svg') }}" alt="Logo Asrama AKTI" class="brand-logo">
                 <h1>Dormitory Room Occupation</h1>
             </div>
 

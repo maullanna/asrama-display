@@ -67,11 +67,6 @@ class RoomResource extends Resource
                         'kuning' => 'heroicon-o-clock',
                         'merah' => 'heroicon-o-exclamation-triangle',
                     ]),
-                Forms\Components\Textarea::make('keterangan')
-                    ->label('Keterangan')
-                    ->rows(2)
-                    ->maxLength(255)
-                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Urutan')
                     ->required()
@@ -106,10 +101,6 @@ class RoomResource extends Resource
                     ->color(fn (?string $state) => match ($state) {
                         'hijau' => 'success', 'kuning' => 'warning', 'merah' => 'danger', default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('keterangan')
-                    ->label('Keterangan')
-                    ->limit(30)
-                    ->toggleable(),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Urutan')
                     ->numeric()

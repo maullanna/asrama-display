@@ -55,27 +55,16 @@
                             @endforeach
                         </div>
 
-                        @if ($room->students_with_condition->isNotEmpty())
-                            <div class="conditions">
-                                @foreach ($room->students_with_condition as $student)
-                                    <div class="condition-row {{ $student->condition->type }}">
-                                        <span class="condition-badge {{ $student->condition->type }}">
-                                            {{ $student->condition->type === 'sakit' ? 'SICK' : 'LEAVE '.strtoupper($student->condition->direction ?? '') }}
-                                        </span>
-                                        <div class="condition-info">
-                                            <div class="name">{{ $student->name }} &middot; {{ $student->student_code }}</div>
-                                            @if ($student->condition->note)
-                                                <div class="note">{{ \Illuminate\Support\Str::limit($student->condition->note, 32) }}</div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-
                     </div>
 
-                    <div class="room-ket"><b>Keterangan:</b> {{ filled($room->keterangan) ? \Illuminate\Support\Str::limit($room->keterangan, 70) : '-' }}</div>
+                    <div class="room-ket">
+                        <b>Keterangan:</b>
+                        @forelse ($room->students_with_condition as $student)
+                            <span class="k-item">{{ $student->name }} &mdash; {{ $student->condition->note ?: ($student->condition->type === 'sakit' ? 'Sakit' : 'Izin') }}</span>@if (! $loop->last), @endif
+                        @empty
+                            -
+                        @endforelse
+                    </div>
                 </div>
             @endforeach
         </div>

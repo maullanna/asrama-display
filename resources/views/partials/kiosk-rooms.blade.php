@@ -14,20 +14,22 @@
 
         <div class="room-grid">
             @foreach ($slide['rooms'] as $room)
-                <div class="room-card r5-{{ $room->status_color ?? 'none' }}">
-                    <div class="room-header">
-                        <span class="room-title">
-                            <span class="r5-dot r5-{{ $room->status_color ?? 'none' }}"></span>
-                            ROOM {{ $room->room_number }}
-                        </span>
-                        <span>{{ $room->capacity }} PEOPLE</span>
+                <div class="room-card">
+                    <div class="rhead">
+                        <div class="rnum">ROOM {{ $room->room_number }}</div>
+                        <div class="capocc">
+                            <div class="r"><span>Capacity</span><b>{{ $room->capacity }}</b></div>
+                            <div class="r"><span>Occupancy</span><b>{{ $room->occupancy }}</b></div>
+                        </div>
+                        <div class="r5lbl">5R<br>Point</div>
+                        <div class="r5checks">
+                            <div class="chk hijau {{ $room->status_color === 'hijau' ? 'on' : '' }}"><span class="box"></span>Hijau</div>
+                            <div class="chk kuning {{ $room->status_color === 'kuning' ? 'on' : '' }}"><span class="box"></span>Kuning</div>
+                            <div class="chk merah {{ $room->status_color === 'merah' ? 'on' : '' }}"><span class="box"></span>Merah</div>
+                        </div>
                     </div>
 
                     <div class="room-body">
-                        <div class="pill pill-status">
-                            <span>OCCUPANCY {{ $room->occupancy }}/{{ $room->capacity }}</span>
-                        </div>
-
                         <div class="students">
                             @foreach ($room->students as $student)
                                 <div class="student status-{{ $student->status }}">
@@ -71,10 +73,9 @@
                             </div>
                         @endif
 
-                        @if (filled($room->keterangan))
-                            <div class="room-note"><span>Ket:</span> {{ \Illuminate\Support\Str::limit($room->keterangan, 70) }}</div>
-                        @endif
                     </div>
+
+                    <div class="room-ket"><b>Keterangan:</b> {{ filled($room->keterangan) ? \Illuminate\Support\Str::limit($room->keterangan, 70) : '-' }}</div>
                 </div>
             @endforeach
         </div>

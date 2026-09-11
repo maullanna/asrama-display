@@ -77,34 +77,39 @@
 
             .room-card {
                 background: #fff;
-                border-radius: 6px;
+                border: 1.5px solid #0b1f4d;
+                border-radius: 7px;
                 overflow: hidden;
-                box-shadow: 0 1px 6px rgba(11,31,77,0.08);
-            }
-
-            .room-header {
-                background: #0b1f4d;
-                color: #fff;
                 display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 7px 10px;
-                font-weight: 700;
-                font-size: 12px;
+                flex-direction: column;
             }
 
-            .room-title { display: flex; align-items: center; gap: 7px; }
-            .r5-dot { width: 12px; height: 12px; border-radius: 3px; background: #94a3b8; flex-shrink: 0; display: inline-block; }
-            .r5-dot.r5-hijau { background: #22c55e; }
-            .r5-dot.r5-kuning { background: #eab308; }
-            .r5-dot.r5-merah { background: #ef4444; }
+            /* Header bergaris (tabel): Room | Capacity/Occupancy | 5R Point | checkbox warna */
+            .rhead { display: flex; align-items: stretch; border-bottom: 1.5px solid #0b1f4d; }
+            .rhead > div { padding: 4px 6px; border-right: 1px solid #cbd5e1; display: flex; }
+            .rhead > div:last-child { border-right: none; }
 
-            .room-card.r5-hijau { border-left: 4px solid #22c55e; }
-            .room-card.r5-kuning { border-left: 4px solid #eab308; }
-            .room-card.r5-merah { border-left: 4px solid #ef4444; }
+            .rhead .rnum { align-items: center; font-weight: 800; font-size: 13px; color: #0b1f4d; min-width: 58px; }
+            .rhead .capocc { flex-direction: column; justify-content: center; gap: 2px; font-size: 9.5px; flex: 1; }
+            .rhead .capocc .r { display: flex; justify-content: space-between; gap: 6px; }
+            .rhead .capocc b { color: #0b1f4d; font-size: 10.5px; }
 
-            .room-note { border-top: 1px solid #eef1f6; margin-top: 6px; padding-top: 6px; font-size: 10px; color: #475569; }
-            .room-note span { font-weight: 700; color: #0b1f4d; }
+            .rhead .r5lbl { align-items: center; justify-content: center; font-weight: 700; font-size: 9.5px; color: #0b1f4d; text-align: center; line-height: 1.1; }
+
+            .rhead .r5checks { flex-direction: column; justify-content: center; gap: 2px; font-size: 9px; }
+            .rhead .r5checks .chk { display: flex; align-items: center; gap: 4px; color: #94a3b8; }
+            .rhead .r5checks .box { width: 9px; height: 9px; border: 1.5px solid #cbd5e1; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+            .rhead .r5checks .chk.on { font-weight: 700; }
+            .rhead .r5checks .chk.on.hijau { color: #16a34a; }
+            .rhead .r5checks .chk.on.kuning { color: #ca8a04; }
+            .rhead .r5checks .chk.on.merah { color: #dc2626; }
+            .rhead .r5checks .chk.on.hijau .box { background: #22c55e; border-color: #22c55e; }
+            .rhead .r5checks .chk.on.kuning .box { background: #eab308; border-color: #eab308; }
+            .rhead .r5checks .chk.on.merah .box { background: #ef4444; border-color: #ef4444; }
+
+            /* Keterangan bergaris di bawah kartu */
+            .room-ket { border-top: 1.5px solid #0b1f4d; padding: 4px 8px; font-size: 9.5px; color: #475569; margin-top: auto; }
+            .room-ket b { color: #0b1f4d; }
 
             .r5-legend { display: flex; gap: 16px; font-size: 12px; color: #fff; }
             .r5-legend .lg { display: flex; align-items: center; gap: 6px; }
@@ -254,12 +259,6 @@
                     <path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <h1>DORMITORY ROOM CHART</h1>
-            </div>
-
-            <div class="r5-legend">
-                <span class="lg"><i class="r5-dot r5-hijau"></i> 5R Baik</span>
-                <span class="lg"><i class="r5-dot r5-kuning"></i> On Progress</span>
-                <span class="lg"><i class="r5-dot r5-merah"></i> Berantakan</span>
             </div>
 
             <div class="header-right">

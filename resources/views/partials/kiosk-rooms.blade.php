@@ -1,9 +1,9 @@
 <script type="application/json" id="abnormal-json">@json($abnormal ?? [])</script>
 @php
-    // Susun "slide": tiap lantai jadi satu slide; bila kamarnya banyak, dipotong per 8.
+    // Susun "slide": tiap lantai jadi satu slide; maksimal 10 kamar per slide (5 x 2).
     $slides = collect();
     foreach ($floors as $floor) {
-        foreach ($floor->rooms->chunk(8) as $chunk) {
+        foreach ($floor->rooms->chunk(10) as $chunk) {
             $slides->push(['floor' => $floor, 'rooms' => $chunk]);
         }
     }

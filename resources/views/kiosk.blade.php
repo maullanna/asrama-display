@@ -8,13 +8,18 @@
         <style>
             * { box-sizing: border-box; margin: 0; padding: 0; }
 
+            html, body { height: 100%; }
             body {
                 font-family: 'Segoe UI', Arial, sans-serif;
                 background: #eef1f6;
                 color: #1b1f2a;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;   /* tanpa scroll — pakai slideshow geser */
             }
 
             header {
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -35,7 +40,25 @@
             .qr svg { width: 100%; height: 100%; display: block; }
             .qr-label { font-size: 11px; line-height: 1.3; opacity: 0.9; }
 
-            main { padding: 24px 28px; }
+            main#rooms { flex: 1; position: relative; overflow: hidden; }
+
+            /* Tiap slide menempati satu layar penuh; geser dengan fade + slide halus. */
+            .slide {
+                position: absolute;
+                inset: 0;
+                padding: 20px 28px;
+                opacity: 0;
+                transform: translateX(70px) scale(0.985);
+                transition: opacity .9s ease, transform .9s cubic-bezier(.22,.61,.36,1);
+                pointer-events: none;
+            }
+            .slide.active {
+                opacity: 1;
+                transform: none;
+                pointer-events: auto;
+            }
+            #rooms.no-anim .slide { transition: none !important; }
+            #rooms.has-alert .slide { padding-bottom: 72px; }
 
             .floor-title {
                 font-size: 15px;
@@ -267,16 +290,17 @@
             function updateAbnormalBar() {
                 const list = readAbnormal();
                 const bar = document.getElementById('abnormal-bar');
+                const rooms = document.getElementById('rooms');
                 if (!list.length) {
                     bar.style.display = 'none';
-                    document.body.style.paddingBottom = '';
+                    rooms.classList.remove('has-alert');
                     return;
                 }
                 const names = list.map(s => `${s.name} (${s.room})`).join('   •   ');
                 document.getElementById('abnormal-text').textContent =
                     `BELUM CI/CO — ${list.length} mahasiswa: ${names}`;
                 bar.style.display = 'flex';
-                document.body.style.paddingBottom = '64px';
+                rooms.classList.add('has-alert');
             }
 
             // Polling halus tiap 10 detik: ambil kartu kamar terbaru, ganti tanpa reload.
@@ -287,6 +311,7 @@
                     const html = await res.text();
                     document.getElementById('rooms').innerHTML = html;
                     updateAbnormalBar();
+                    showSlides(true); // tampilkan slide aktif saat ini tanpa animasi (anti-kedip)
                 } catch (e) { /* abaikan blip jaringan, coba lagi siklus berikutnya */ }
             }
             setInterval(refreshRooms, 10000);
@@ -305,54 +330,37 @@
                 setTimeout(() => flash.classList.remove('show'), 6000);
             }, 30000);
 
-            // Auto-scroll pelan untuk TV: jeda di atas -> turun pelan -> jeda di bawah -> naik pelan.
-            // Satu siklus ~3 menit (tergantung tinggi konten). Semua bisa diatur di sini.
-            const AUTOSCROLL = {
-                speedDown: 10,     // kecepatan turun (px/detik) — makin kecil makin pelan
-                speedUp: 10,       // kecepatan balik ke atas (px/detik) — sama dengan turun
-                pauseTop: 10000,   // jeda diam di atas (ms)
-                pauseBottom: 6000  // jeda diam di bawah (ms)
-            };
+            // ===== Slideshow: geser otomatis antar slide tiap 30 detik (bukan scroll) =====
+            const SLIDE_INTERVAL = 30000; // ms per slide
+            let slideIndex = 0;
 
-            const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-            function hasOverflow() {
-                return document.body.scrollHeight > window.innerHeight + 4;
+            function getSlides() {
+                return Array.from(document.querySelectorAll('#rooms .slide'));
             }
 
-            // direction: 1 = turun, -1 = naik. Bergerak pelan sampai ujung.
-            function scrollSlow(direction, speed) {
-                return new Promise((resolve) => {
-                    let last = null;
-                    function step(ts) {
-                        if (last === null) last = ts;
-                        const dt = (ts - last) / 1000;
-                        last = ts;
-                        window.scrollBy(0, direction * speed * dt);
-                        const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1;
-                        const atTop = window.scrollY <= 0;
-                        if ((direction > 0 && atBottom) || (direction < 0 && atTop)) {
-                            resolve();
-                        } else {
-                            requestAnimationFrame(step);
-                        }
-                    }
-                    requestAnimationFrame(step);
-                });
-            }
-
-            async function autoScrollLoop() {
-                await sleep(1500); // tunggu render awal
-                while (true) {
-                    await sleep(AUTOSCROLL.pauseTop);
-                    if (hasOverflow()) {
-                        await scrollSlow(1, AUTOSCROLL.speedDown);   // turun pelan
-                        await sleep(AUTOSCROLL.pauseBottom);
-                        await scrollSlow(-1, AUTOSCROLL.speedUp);    // naik pelan
-                    }
+            // Tampilkan slide aktif. instant=true -> tanpa animasi (untuk load/refresh).
+            function showSlides(instant) {
+                const slides = getSlides();
+                if (!slides.length) return;
+                if (slideIndex >= slides.length) slideIndex = 0;
+                const rooms = document.getElementById('rooms');
+                if (instant) rooms.classList.add('no-anim');
+                slides.forEach((s, i) => s.classList.toggle('active', i === slideIndex));
+                if (instant) {
+                    // lepas 'no-anim' setelah 2 frame agar perubahan berikutnya beranimasi
+                    requestAnimationFrame(() => requestAnimationFrame(() => rooms.classList.remove('no-anim')));
                 }
             }
-            autoScrollLoop();
+
+            function nextSlide() {
+                const slides = getSlides();
+                if (slides.length <= 1) return; // 1 slide: diam saja
+                slideIndex = (slideIndex + 1) % slides.length;
+                showSlides(false);
+            }
+
+            showSlides(true);                    // tampilkan slide pertama saat load
+            setInterval(nextSlide, SLIDE_INTERVAL);
         </script>
     </body>
 </html>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdmsController;
 use App\Http\Controllers\KioskController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,12 @@ Route::get('/', [KioskController::class, 'index']);
 
 // Endpoint polling AJAX untuk update kartu kamar tanpa reload halaman
 Route::get('/kiosk-rooms', [KioskController::class, 'rooms'])->name('kiosk.rooms');
+
+// Web Push: daftar perangkat & uji notifikasi (hanya admin yang login)
+Route::middleware('auth')->group(function () {
+    Route::post('/push/subscribe', [PushSubscriptionController::class, 'store'])->name('push.subscribe');
+    Route::post('/push/test', [PushSubscriptionController::class, 'test'])->name('push.test');
+});
 
 // Form laporan kondisi anggota oleh ketua kamar (diakses via QR di kiosk)
 Route::get('/lapor', [ReportController::class, 'show'])->name('report.show');

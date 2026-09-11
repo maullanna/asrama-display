@@ -93,6 +93,22 @@
                 font-size: 12px;
             }
 
+            .room-title { display: flex; align-items: center; gap: 7px; }
+            .r5-dot { width: 12px; height: 12px; border-radius: 3px; background: #94a3b8; flex-shrink: 0; display: inline-block; }
+            .r5-dot.r5-hijau { background: #22c55e; }
+            .r5-dot.r5-kuning { background: #eab308; }
+            .r5-dot.r5-merah { background: #ef4444; }
+
+            .room-card.r5-hijau { border-left: 4px solid #22c55e; }
+            .room-card.r5-kuning { border-left: 4px solid #eab308; }
+            .room-card.r5-merah { border-left: 4px solid #ef4444; }
+
+            .room-note { border-top: 1px solid #eef1f6; margin-top: 6px; padding-top: 6px; font-size: 10px; color: #475569; }
+            .room-note span { font-weight: 700; color: #0b1f4d; }
+
+            .r5-legend { display: flex; gap: 16px; font-size: 12px; color: #fff; }
+            .r5-legend .lg { display: flex; align-items: center; gap: 6px; }
+
             .room-body { padding: 8px 10px 10px; }
 
             .pill {
@@ -238,6 +254,12 @@
                     <path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <h1>DORMITORY ROOM CHART</h1>
+            </div>
+
+            <div class="r5-legend">
+                <span class="lg"><i class="r5-dot r5-hijau"></i> 5R Baik</span>
+                <span class="lg"><i class="r5-dot r5-kuning"></i> On Progress</span>
+                <span class="lg"><i class="r5-dot r5-merah"></i> Berantakan</span>
             </div>
 
             <div class="header-right">

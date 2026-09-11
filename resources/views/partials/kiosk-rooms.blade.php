@@ -14,9 +14,12 @@
 
         <div class="room-grid">
             @foreach ($slide['rooms'] as $room)
-                <div class="room-card">
+                <div class="room-card r5-{{ $room->status_color ?? 'none' }}">
                     <div class="room-header">
-                        <span>ROOM {{ $room->room_number }}</span>
+                        <span class="room-title">
+                            <span class="r5-dot r5-{{ $room->status_color ?? 'none' }}"></span>
+                            ROOM {{ $room->room_number }}
+                        </span>
                         <span>{{ $room->capacity }} PEOPLE</span>
                     </div>
 
@@ -66,6 +69,10 @@
                                     </div>
                                 @endforeach
                             </div>
+                        @endif
+
+                        @if (filled($room->keterangan))
+                            <div class="room-note"><span>Ket:</span> {{ \Illuminate\Support\Str::limit($room->keterangan, 70) }}</div>
                         @endif
                     </div>
                 </div>

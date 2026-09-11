@@ -48,6 +48,30 @@ class RoomResource extends Resource
                 Forms\Components\TextInput::make('access_pin')
                     ->label('PIN Akses Ketua Kamar')
                     ->maxLength(10),
+                Forms\Components\ToggleButtons::make('status_color')
+                    ->label('Status 5R kamar')
+                    ->helperText('Penilaian kebersihan/kerapian kamar oleh super admin.')
+                    ->inline()
+                    ->options([
+                        'hijau' => 'Hijau — Baik',
+                        'kuning' => 'Kuning — On Progress',
+                        'merah' => 'Merah — Berantakan',
+                    ])
+                    ->colors([
+                        'hijau' => 'success',
+                        'kuning' => 'warning',
+                        'merah' => 'danger',
+                    ])
+                    ->icons([
+                        'hijau' => 'heroicon-o-check-circle',
+                        'kuning' => 'heroicon-o-clock',
+                        'merah' => 'heroicon-o-exclamation-triangle',
+                    ]),
+                Forms\Components\Textarea::make('keterangan')
+                    ->label('Keterangan')
+                    ->rows(2)
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Urutan')
                     ->required()
@@ -73,6 +97,19 @@ class RoomResource extends Resource
                 Tables\Columns\TextColumn::make('access_pin')
                     ->label('PIN Akses')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('status_color')
+                    ->label('Status 5R')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state) => match ($state) {
+                        'hijau' => 'Hijau', 'kuning' => 'Kuning', 'merah' => 'Merah', default => '-',
+                    })
+                    ->color(fn (?string $state) => match ($state) {
+                        'hijau' => 'success', 'kuning' => 'warning', 'merah' => 'danger', default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->limit(30)
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Urutan')
                     ->numeric()

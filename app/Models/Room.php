@@ -13,6 +13,8 @@ class Room extends Model
         'room_number',
         'capacity',
         'access_pin',
+        'status_color',
+        'keterangan',
         'sort_order',
     ];
 

@@ -10,8 +10,8 @@ self.addEventListener('push', function (event) {
     const title = data.title || 'Asrama AKTI';
     const options = {
         body: data.body || '',
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
+        icon: '/icon-192.png',
+        badge: '/badge-96.png',
         data: { url: data.url || '/' },
         vibrate: [200, 100, 200],
         tag: 'abnormal',

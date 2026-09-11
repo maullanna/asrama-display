@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=1920, initial-scale=1">
         <meta http-equiv="refresh" content="600">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <title>Dormitory Room Chart</title>
         <style>
             * { box-sizing: border-box; margin: 0; padding: 0; }

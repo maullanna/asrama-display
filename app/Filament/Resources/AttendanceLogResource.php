@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\RestrictsByRole;
 use App\Filament\Resources\AttendanceLogResource\Pages;
 use App\Filament\Resources\AttendanceLogResource\RelationManagers;
 use App\Models\AttendanceLog;
@@ -15,7 +16,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AttendanceLogResource extends Resource
 {
+    use RestrictsByRole;
+
     protected static ?string $model = AttendanceLog::class;
+
+    protected static function allowedRoles(): array
+    {
+        return ['super_admin', 'koordinator'];
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-finger-print';
 

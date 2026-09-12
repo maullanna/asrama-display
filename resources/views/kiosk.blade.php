@@ -109,6 +109,13 @@
             .room-ket b { color: #0b1f4d; }
             .room-ket .k-item { color: #b91c1c; font-weight: 600; }
 
+            /* Ruang isolasi: kartu & status khusus */
+            .isolation-card { border-color: #b91c1c; }
+            .isolation-card .rhead { background: #b91c1c; }
+            .rhead .iso-lbl { text-transform: none; }
+            .student.status-isolasi .avatar { border-color: #8b5cf6; }
+            .student.status-isolasi .time { color: #7c3aed; }
+
             .r5-legend { display: flex; gap: 16px; font-size: 12px; color: #fff; }
             .r5-legend .lg { display: flex; align-items: center; gap: 6px; }
 

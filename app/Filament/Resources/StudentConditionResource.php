@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\RestrictsByRole;
 use App\Filament\Resources\StudentConditionResource\Pages;
 use App\Filament\Resources\StudentConditionResource\RelationManagers;
 use App\Models\StudentCondition;
@@ -15,7 +16,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StudentConditionResource extends Resource
 {
+    use RestrictsByRole;
+
     protected static ?string $model = StudentCondition::class;
+
+    protected static function allowedRoles(): array
+    {
+        return ['super_admin', 'koordinator'];
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 

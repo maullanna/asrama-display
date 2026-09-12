@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Floor;
+use App\Models\Room;
+use App\Models\Student;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -21,6 +23,7 @@ class KioskController extends Controller
             'today' => Carbon::today(),
             'reportQr' => $reportQr,
             'abnormal' => $this->abnormalList($floors),
+            'isolation' => $this->isolationRoom(),
         ]);
     }
 
@@ -34,7 +37,45 @@ class KioskController extends Controller
         return view('partials.kiosk-rooms', [
             'floors' => $floors,
             'abnormal' => $this->abnormalList($floors),
+            'isolation' => $this->isolationRoom(),
         ]);
+    }
+
+    /**
+     * Ruang isolasi + penghuninya (mahasiswa dengan kondisi 'isolasi' aktif hari ini).
+     * Mengembalikan objek Room ber-relasi students (yang diisolasi), atau null bila
+     * belum ada kamar yang ditandai sebagai ruang isolasi.
+     */
+    private function isolationRoom(): ?Room
+    {
+        $room = Room::where('is_isolation', true)->with('floor')->first();
+        if (! $room) {
+            return null;
+        }
+
+        $today = Carbon::today();
+        $activeIsolation = fn ($query) => $query->where('type', 'isolasi')
+            ->whereDate('start_date', '<=', $today)
+            ->where(fn ($q) => $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today));
+
+        $students = Student::query()
+            ->where('is_active', true)
+            ->whereHas('conditions', $activeIsolation)
+            ->with(['conditions' => $activeIsolation])
+            ->orderBy('name')
+            ->get();
+
+        foreach ($students as $student) {
+            $student->condition = $student->conditions->first();
+            $student->ci_time = null;
+            $student->status = 'isolasi';
+        }
+
+        $room->setRelation('students', $students);
+        $room->occupancy = $students->count();
+        $room->students_with_condition = $students;
+
+        return $room;
     }
 
     /**

@@ -30,6 +30,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->role === 'super_admin';
     }
 
+    public function isMenkes(): bool
+    {
+        return $this->role === 'menkes';
+    }
+
     public function pushSubscriptions(): HasMany
     {
         return $this->hasMany(PushSubscription::class);

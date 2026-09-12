@@ -15,8 +15,16 @@ class Room extends Model
         'access_pin',
         'status_color',
         'keterangan',
+        'is_isolation',
         'sort_order',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_isolation' => 'boolean',
+        ];
+    }
 
     public function floor(): BelongsTo
     {

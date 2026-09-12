@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\RestrictsByRole;
 use App\Filament\Resources\RoomResource\Pages;
 use App\Filament\Resources\RoomResource\RelationManagers;
 use App\Models\Room;
@@ -15,7 +16,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RoomResource extends Resource
 {
+    use RestrictsByRole;
+
     protected static ?string $model = Room::class;
+
+    protected static function allowedRoles(): array
+    {
+        return ['super_admin', 'koordinator'];
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
 
@@ -48,6 +56,9 @@ class RoomResource extends Resource
                 Forms\Components\TextInput::make('access_pin')
                     ->label('PIN Akses Ketua Kamar')
                     ->maxLength(10),
+                Forms\Components\Toggle::make('is_isolation')
+                    ->label('Jadikan Ruang Isolasi')
+                    ->helperText('Kamar ini dipakai untuk isolasi mahasiswa sakit (biasanya kapasitas 2). Penghuninya diinput oleh Menkes.'),
                 Forms\Components\ToggleButtons::make('status_color')
                     ->label('Status 5R kamar')
                     ->helperText('Penilaian kebersihan/kerapian kamar oleh super admin.')
@@ -92,6 +103,9 @@ class RoomResource extends Resource
                 Tables\Columns\TextColumn::make('access_pin')
                     ->label('PIN Akses')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_isolation')
+                    ->label('Isolasi')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('status_color')
                     ->label('Status 5R')
                     ->badge()

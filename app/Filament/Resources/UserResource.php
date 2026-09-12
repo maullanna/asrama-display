@@ -28,6 +28,7 @@ class UserResource extends Resource
     protected const ROLES = [
         'super_admin' => 'Super Admin',
         'koordinator' => 'Kordinator',
+        'menkes' => 'Menkes (Petugas Kesehatan)',
     ];
 
     /** Hanya Super Admin yang boleh mengakses menu ini. */

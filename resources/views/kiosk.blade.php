@@ -30,7 +30,7 @@
             }
 
             .brand { display: flex; align-items: center; gap: 12px; }
-            .brand-logo { width: 36px; height: 36px; display: block; }
+            .brand-logo { width: 42px; height: 42px; display: block; background: #fff; border-radius: 8px; padding: 3px; }
             .brand h1 { font-size: 20px; letter-spacing: .5px; }
 
             .header-right { display: flex; align-items: center; gap: 18px; }

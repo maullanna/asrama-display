@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('Asrama AKTI')
+            ->brandLogo(asset('favicon.svg').'?v=2')
+            ->brandLogoHeight('2.4rem')
             ->favicon(asset('favicon.svg').'?v=2')
             ->colors([
                 'primary' => Color::Amber,

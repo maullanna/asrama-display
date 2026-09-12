@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=1920, initial-scale=1">
         <meta http-equiv="refresh" content="600">
         <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
-        <title>Dormitory Room Chart</title>
+        <title>Dormitory Room Occupation</title>
         <style>
             * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,7 +30,7 @@
             }
 
             .brand { display: flex; align-items: center; gap: 12px; }
-            .brand-logo { width: 42px; height: 42px; display: block; background: #fff; border-radius: 8px; padding: 3px; }
+            .brand-logo { width: 44px; height: 44px; display: block; }
             .brand h1 { font-size: 20px; letter-spacing: .5px; }
 
             .header-right { display: flex; align-items: center; gap: 18px; }

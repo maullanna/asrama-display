@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('Asrama AKTI')
-            ->favicon(asset('favicon.svg'))
+            ->favicon(asset('favicon.svg').'?v=2')
             ->colors([
                 'primary' => Color::Amber,
             ])

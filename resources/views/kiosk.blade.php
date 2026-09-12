@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=1920, initial-scale=1">
         <meta http-equiv="refresh" content="600">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
         <title>Dormitory Room Chart</title>
         <style>
             * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -260,7 +260,7 @@
     <body>
         <header>
             <div class="brand">
-                <img src="{{ asset('favicon.svg') }}" alt="Logo Asrama AKTI" class="brand-logo">
+                <img src="{{ asset('favicon.svg') }}?v=2" alt="Logo Asrama AKTI" class="brand-logo">
                 <h1>Dormitory Room Occupation</h1>
             </div>
 

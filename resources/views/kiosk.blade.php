@@ -131,15 +131,15 @@
                 background: #0b1f4d; color: #fff; font-weight: 800; letter-spacing: 1px; font-size: 14px;
                 display: flex; align-items: center; justify-content: center; padding: 8px; flex-shrink: 0;
             }
-            .vok-grid { flex: 1; display: grid; grid-template-columns: repeat(9, 1fr); gap: 8px; padding: 10px; align-content: start; overflow: hidden; }
+            .vok-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 88px)); gap: 5px 7px; padding: 8px 10px; align-content: start; justify-content: start; overflow: hidden; }
             .vok-item { text-align: center; min-width: 0; }
             .vok-photo {
-                width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 5px;
-                border: 2px solid #0b1f4d; background: #eef1f6;
-                display: flex; align-items: center; justify-content: center; color: #94a3b8; margin-bottom: 3px;
+                width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+                border: 1.5px solid #0b1f4d; background: #eef1f6;
+                display: flex; align-items: center; justify-content: center; color: #94a3b8; margin-bottom: 2px;
             }
-            .vok-photo.vok-empty svg { width: 60%; height: 60%; }
-            .vok-name { font-size: 10px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .vok-photo.vok-empty svg { width: 58%; height: 58%; }
+            .vok-name { font-size: 8.5px; font-weight: 600; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
             .r5-legend { display: flex; gap: 16px; font-size: 12px; color: #fff; }
             .r5-legend .lg { display: flex; align-items: center; gap: 6px; }

@@ -38,6 +38,23 @@ Route::get('/import-template-mahasiswa.xlsx', function () {
     );
 })->middleware('auth')->name('students.import.template');
 
+// Template Excel untuk import vokasi (hanya untuk admin yang login)
+Route::get('/import-template-vokasi.xlsx', function () {
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $spreadsheet->getActiveSheet()->fromArray([
+        ['nama', 'lokasi'],
+        ['Nama Mahasiswa Satu', 'Sunter'],
+        ['Nama Mahasiswa Dua', 'Karawang'],
+    ]);
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+    return response()->streamDownload(
+        fn () => $writer->save('php://output'),
+        'template-vokasi.xlsx',
+        ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+    );
+})->middleware('auth')->name('vocations.import.template');
+
 // Handshake: mesin meminta konfigurasi saat pertama terhubung
 Route::get('/iclock/cdata', [AdmsController::class, 'handshake']);
 

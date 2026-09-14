@@ -116,6 +116,31 @@
             .student.status-isolasi .avatar { border-color: #8b5cf6; }
             .student.status-isolasi .time { color: #7c3aed; }
 
+            /* Slide VOKASI (mahasiswa A10 di luar), dikelompokkan per lokasi */
+            .vok-page { display: flex; gap: 10px; height: 100%; }
+            .vok-title {
+                writing-mode: vertical-rl; transform: rotate(180deg);
+                background: #dbe3f0; color: #0b1f4d; font-weight: 800; font-size: 22px; letter-spacing: 3px;
+                display: flex; align-items: center; justify-content: center; padding: 10px;
+                border: 1.5px solid #0b1f4d; border-radius: 7px; flex-shrink: 0;
+            }
+            .vok-groups { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+            .vok-group { flex: 1; display: flex; gap: 10px; border: 1.5px solid #0b1f4d; border-radius: 7px; overflow: hidden; background: #fff; }
+            .vok-loc {
+                writing-mode: vertical-rl; transform: rotate(180deg);
+                background: #0b1f4d; color: #fff; font-weight: 800; letter-spacing: 1px; font-size: 14px;
+                display: flex; align-items: center; justify-content: center; padding: 8px; flex-shrink: 0;
+            }
+            .vok-grid { flex: 1; display: grid; grid-template-columns: repeat(9, 1fr); gap: 8px; padding: 10px; align-content: start; overflow: hidden; }
+            .vok-item { text-align: center; min-width: 0; }
+            .vok-photo {
+                width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 5px;
+                border: 2px solid #0b1f4d; background: #eef1f6;
+                display: flex; align-items: center; justify-content: center; color: #94a3b8; margin-bottom: 3px;
+            }
+            .vok-photo.vok-empty svg { width: 60%; height: 60%; }
+            .vok-name { font-size: 10px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
             .r5-legend { display: flex; gap: 16px; font-size: 12px; color: #fff; }
             .r5-legend .lg { display: flex; align-items: center; gap: 6px; }
 

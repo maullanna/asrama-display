@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Floor;
 use App\Models\Room;
 use App\Models\Student;
+use App\Models\Vocation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -24,6 +25,7 @@ class KioskController extends Controller
             'reportQr' => $reportQr,
             'abnormal' => $this->abnormalList($floors),
             'isolation' => $this->isolationRoom(),
+            'vocations' => $this->vocations(),
         ]);
     }
 
@@ -38,7 +40,32 @@ class KioskController extends Controller
             'floors' => $floors,
             'abnormal' => $this->abnormalList($floors),
             'isolation' => $this->isolationRoom(),
+            'vocations' => $this->vocations(),
         ]);
+    }
+
+    /**
+     * Mahasiswa vokasi (A10) dikelompokkan per lokasi (urutan tetap: Sunter, Karawang).
+     * Hanya lokasi yang ada mahasiswanya yang disertakan.
+     *
+     * @return array<int, array{key:string, label:string, students:\Illuminate\Support\Collection}>
+     */
+    private function vocations(): array
+    {
+        $active = Vocation::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        $grouped = [];
+        foreach (Vocation::LOCATIONS as $key => $label) {
+            $list = $active->where('location', $key)->values();
+            if ($list->isNotEmpty()) {
+                $grouped[] = ['key' => $key, 'label' => $label, 'students' => $list];
+            }
+        }
+
+        return $grouped;
     }
 
     /**

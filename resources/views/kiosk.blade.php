@@ -116,12 +116,20 @@
             .student.status-isolasi .avatar { border-color: #8b5cf6; }
             .student.status-isolasi .time { color: #7c3aed; }
 
-            /* Summary kontekstual di header (disalin dari slide aktif via JS) */
-            #header-summary { display: flex; align-items: center; gap: 16px; color: #fff; }
-            #header-summary .hs-title { font-weight: 800; font-size: 14px; letter-spacing: 1px; padding-right: 14px; border-right: 1px solid rgba(255,255,255,0.28); }
-            #header-summary .hs-stat { display: flex; flex-direction: column; align-items: center; line-height: 1.05; }
-            #header-summary .hs-stat b { font-size: 17px; }
-            #header-summary .hs-stat span { font-size: 9.5px; opacity: 0.82; margin-top: 1px; }
+            /* Summary kontekstual di header (disalin dari slide aktif via JS) — bertabel/border */
+            #header-summary { display: flex; align-items: stretch; height: 46px; color: #fff;
+                border: 1.5px solid rgba(255,255,255,0.45); border-radius: 7px; overflow: hidden;
+                background: rgba(255,255,255,0.06); }
+            #header-summary:empty { display: none; }
+            #header-summary .hs-title { display: flex; align-items: center; padding: 0 14px;
+                background: rgba(255,255,255,0.14); font-weight: 800; font-size: 12px; letter-spacing: 1px;
+                border-right: 1.5px solid rgba(255,255,255,0.35); }
+            #header-summary .hs-stat { display: flex; flex-direction: column; align-items: center; justify-content: center;
+                padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.22); line-height: 1; }
+            #header-summary .hs-stat:last-child { border-right: none; }
+            #header-summary .hs-stat b { font-size: 16px; }
+            #header-summary .hs-stat span { font-size: 8.5px; opacity: 0.8; margin-top: 3px; white-space: nowrap; }
+            #header-summary .hs-total { background: rgba(255,224,138,0.14); }
             #header-summary .hs-total b { color: #ffe08a; }
             .slide-summary { display: none; }   /* pembawa data, disalin ke header */
 

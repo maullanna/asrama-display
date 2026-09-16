@@ -24,6 +24,7 @@ class KioskController extends Controller
             'reportQr' => $reportQr,
             'abnormal' => $this->abnormalList($floors),
             'vocations' => $this->vocations(),
+            'vocationSummary' => $this->vocationSummary(),
         ]);
     }
 
@@ -38,7 +39,34 @@ class KioskController extends Controller
             'floors' => $floors,
             'abnormal' => $this->abnormalList($floors),
             'vocations' => $this->vocations(),
+            'vocationSummary' => $this->vocationSummary(),
         ]);
+    }
+
+    /**
+     * Ringkasan jumlah mahasiswa vokasi per lokasi + total & persentase.
+     *
+     * @return array{rows: array<int, array{label:string, count:int, pct:int}>, total:int}
+     */
+    private function vocationSummary(): array
+    {
+        $counts = Vocation::where('is_active', true)
+            ->selectRaw('location, count(*) as c')
+            ->groupBy('location')
+            ->pluck('c', 'location');
+
+        $rows = [];
+        $total = 0;
+        foreach (Vocation::LOCATIONS as $key => $label) {
+            $n = (int) ($counts[$key] ?? 0);
+            $rows[] = ['label' => $label, 'count' => $n];
+            $total += $n;
+        }
+        foreach ($rows as &$row) {
+            $row['pct'] = $total > 0 ? (int) round($row['count'] / $total * 100) : 0;
+        }
+
+        return ['rows' => $rows, 'total' => $total];
     }
 
     /**

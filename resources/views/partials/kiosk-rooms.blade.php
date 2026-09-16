@@ -16,8 +16,23 @@
 @forelse ($slides as $i => $slide)
     <div class="slide{{ $i === 0 ? ' active' : '' }}">
         @if (isset($slide['vocations']))
-            <div class="vok-page">
-                <div class="vok-title">VOKASI</div>
+            <div class="vok-wrap">
+                @if (! empty($vocationSummary))
+                    <div class="vok-summary">
+                        <div class="vok-sum-label">Summary</div>
+                        <table class="vok-sum-table">
+                            <thead><tr><th colspan="3">Vokasi</th></tr></thead>
+                            <tbody>
+                                @foreach ($vocationSummary['rows'] as $r)
+                                    <tr><td class="lbl">{{ $r['label'] }}</td><td>{{ $r['count'] }}</td><td>{{ $r['pct'] }}%</td></tr>
+                                @endforeach
+                                <tr class="total"><td class="lbl">Total</td><td>{{ $vocationSummary['total'] }}</td><td>100%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+                <div class="vok-page">
+                    <div class="vok-title">VOKASI</div>
                 <div class="vok-groups">
                     @foreach ($slide['vocations'] as $group)
                         <div class="vok-group">
@@ -40,6 +55,7 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
                 </div>
             </div>
         @else

@@ -117,7 +117,15 @@
             .student.status-isolasi .time { color: #7c3aed; }
 
             /* Slide VOKASI (mahasiswa A10 di luar), dikelompokkan per lokasi */
-            .vok-page { display: flex; gap: 10px; height: 100%; }
+            .vok-wrap { display: flex; flex-direction: column; height: 100%; gap: 10px; }
+            .vok-summary { align-self: flex-start; display: flex; border: 1.5px solid #0b1f4d; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+            .vok-sum-label { writing-mode: vertical-rl; transform: rotate(180deg); background: #dbe3f0; color: #0b1f4d; font-weight: 800; font-size: 11px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; padding: 4px; }
+            .vok-sum-table { border-collapse: collapse; font-size: 11px; }
+            .vok-sum-table th { background: #0b1f4d; color: #fff; padding: 3px 16px; font-weight: 700; }
+            .vok-sum-table td { border: 1px solid #cbd5e1; padding: 2px 16px; text-align: center; }
+            .vok-sum-table td.lbl { font-weight: 600; background: #f1f5f9; text-align: left; }
+            .vok-sum-table tr.total td { font-weight: 800; background: #eef2f8; }
+            .vok-page { flex: 1; min-height: 0; display: flex; gap: 10px; }
             .vok-title {
                 writing-mode: vertical-rl; transform: rotate(180deg);
                 background: #dbe3f0; color: #0b1f4d; font-weight: 800; font-size: 22px; letter-spacing: 3px;

@@ -31,8 +31,9 @@
             <div class="vok-page">
                 <div class="vok-title">VOKASI</div>
                 <div class="vok-groups">
+                    @php $maxVok = collect($slide['vocations'])->max(fn ($g) => $g['students']->count()); @endphp
                     @foreach ($slide['vocations'] as $group)
-                        <div class="vok-group" style="flex: {{ max(1, $group['students']->count()) }} 1 0;">
+                        <div class="vok-group{{ $group['students']->count() >= $maxVok ? ' vok-fill' : '' }}">
                             <div class="vok-loc">{{ strtoupper($group['label']) }}</div>
                             <div class="vok-grid">
                                 @foreach ($group['students'] as $v)

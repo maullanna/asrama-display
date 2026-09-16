@@ -136,7 +136,7 @@ class KioskController extends Controller
                 if ($room->is_isolation) {
                     $room->setRelation('students', $isolationStudents);
                     $room->occupancy = $isolationStudents->count();
-                    $room->students_with_condition = collect();
+                    $room->students_with_condition = $isolationStudents; // keterangan: nama — detail sakit
 
                     continue;
                 }

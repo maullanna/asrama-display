@@ -19,25 +19,44 @@
     </div>
 
     <div class="room-body">
+        @php
+            // Ruang isolasi: selalu tampilkan slot sebanyak kapasitas (2), terisi/kosong.
+            $slots = $iso
+                ? collect(range(0, max(1, (int) $room->capacity ?: 2) - 1))->map(fn ($i) => $room->students->get($i))
+                : $room->students;
+        @endphp
         <div class="students">
-            @foreach ($room->students as $student)
-                <div class="student status-{{ $student->status }}">
-                    @if (! empty($student->bed_number))
-                        <div class="bed">{{ $student->bed_number }}</div>
-                    @endif
-                    {{-- Foto hanya muncul kalau sudah fingerprint (present). Selain itu ikon abu-abu. --}}
-                    @if ($student->status === 'present' && $student->photo_path)
-                        <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
-                    @else
+            @foreach ($slots as $student)
+                @if ($student)
+                    <div class="student status-{{ $student->status }}">
+                        @if (! empty($student->bed_number))
+                            <div class="bed">{{ $student->bed_number }}</div>
+                        @endif
+                        {{-- Foto hanya muncul kalau sudah fingerprint (present). Selain itu ikon abu-abu. --}}
+                        @if ($student->status === 'present' && $student->photo_path)
+                            <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
+                        @else
+                            <div class="avatar">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.34 0-10 1.67-10 5v2h20v-2c0-3.33-6.66-5-10-5z"/>
+                                </svg>
+                            </div>
+                        @endif
+                        <div class="name">{{ $student->name }}</div>
+                        <div class="time">@if ($student->status === 'present') CI {{ $student->ci_time?->format('H:i') }} @endif</div>
+                    </div>
+                @else
+                    {{-- Bed kosong (belum ada pasien isolasi) --}}
+                    <div class="student status-empty">
                         <div class="avatar">
                             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.34 0-10 1.67-10 5v2h20v-2c0-3.33-6.66-5-10-5z"/>
                             </svg>
                         </div>
-                    @endif
-                    <div class="name">{{ $student->name }}</div>
-                    <div class="time">@if ($student->status === 'present') CI {{ $student->ci_time?->format('H:i') }} @endif</div>
-                </div>
+                        <div class="name">Empty</div>
+                        <div class="time"></div>
+                    </div>
+                @endif
             @endforeach
         </div>
     </div>

@@ -116,6 +116,8 @@
             .isolation-card .students { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .isolation-card .student .name { font-size: 11px; }
             .isolation-card .student .bed { font-size: 10px; }
+            .student.status-empty .avatar { border-style: dashed; border-color: #cbd5e1; opacity: .55; }
+            .student.status-empty .name { color: #94a3b8; font-style: italic; }
             .rhead .iso-lbl { text-transform: none; }
             .student.status-isolasi .avatar { border-color: #8b5cf6; }
             .student.status-isolasi .time { color: #7c3aed; }

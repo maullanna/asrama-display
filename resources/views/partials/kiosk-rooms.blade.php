@@ -19,9 +19,9 @@
             <div class="slide-summary">
                 <span class="hs-title">VOKASI</span>
                 @foreach ($vocationSummary['rows'] ?? [] as $r)
-                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }}</span></span>
+                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }} &middot; {{ $r['pct'] }}%</span></span>
                 @endforeach
-                <span class="hs-stat hs-total"><b>{{ $vocationSummary['total'] ?? 0 }}</b><span>Total</span></span>
+                <span class="hs-stat hs-total"><b>{{ $vocationSummary['total'] ?? 0 }}</b><span>Total &middot; 100%</span></span>
             </div>
             <div class="vok-page">
                 <div class="vok-title">VOKASI</div>
@@ -55,9 +55,9 @@
             <div class="slide-summary">
                 <span class="hs-title">{{ strtoupper($fname) }}</span>
                 @foreach ($slide['floor']->summary['rows'] as $r)
-                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }}</span></span>
+                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }} &middot; {{ $r['pct'] }}%</span></span>
                 @endforeach
-                <span class="hs-stat hs-total"><b>{{ $slide['floor']->summary['total'] }}</b><span>Total</span></span>
+                <span class="hs-stat hs-total"><b>{{ $slide['floor']->summary['total'] }}</b><span>Total &middot; 100%</span></span>
             </div>
             <div class="floor-title">{{ $fname }}</div>
             <div class="room-grid">

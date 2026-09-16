@@ -142,7 +142,7 @@
                 border: 1.5px solid #0b1f4d; border-radius: 7px; flex-shrink: 0;
             }
             .vok-groups { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-            .vok-group { flex: 1; display: flex; gap: 10px; border: 1.5px solid #0b1f4d; border-radius: 7px; overflow: hidden; background: #fff; }
+            .vok-group { flex: 0 1 auto; display: flex; gap: 10px; border: 1.5px solid #0b1f4d; border-radius: 7px; overflow: hidden; background: #fff; }
             .vok-loc {
                 writing-mode: vertical-rl; transform: rotate(180deg);
                 background: #0b1f4d; color: #fff; font-weight: 800; letter-spacing: 1px; font-size: 14px;

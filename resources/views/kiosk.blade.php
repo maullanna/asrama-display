@@ -127,7 +127,8 @@
             #header-summary:empty { display: none; }
             /* Tabel ringkasan gaya "Summary | Vokasi" (label vertikal + baris nilai) */
             .hs-table { border-collapse: collapse; background: #fff; color: #0b1f4d;
-                font-size: 8px; line-height: 1; border: 1.5px solid #fff; }
+                font-size: 8px; line-height: 1; background-color: #081B4B; /* Warna biru gelap */
+border: 1.5px solid #fff; }
             .hs-table td { border: 1px solid #9fb2d6; padding: 1.5px 7px; white-space: nowrap; }
             .hs-table .hs-side { writing-mode: vertical-rl; transform: rotate(180deg);
                 background: #0b1f4d; color: #fff; font-weight: 800; letter-spacing: 1px;

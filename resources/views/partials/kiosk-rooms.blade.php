@@ -1,11 +1,8 @@
 <script type="application/json" id="abnormal-json">@json($abnormal ?? [])</script>
 @php
-    // Susun "slide": ruang isolasi (bila ada) jadi slide pertama, lalu tiap lantai
-    // (maksimal 10 kamar per slide, 5 x 2).
+    // Susun "slide": tiap lantai (maks 10 kamar per slide). Ruang isolasi kini
+    // menjadi salah satu kartu di dalam grid lantainya (bukan slide terpisah).
     $slides = collect();
-    if (! empty($isolation)) {
-        $slides->push(['isolation' => $isolation]);
-    }
     foreach ($floors as $floor) {
         foreach ($floor->rooms->chunk(10) as $chunk) {
             $slides->push(['floor' => $floor, 'rooms' => $chunk]);
@@ -44,11 +41,6 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
-        @elseif (isset($slide['isolation']))
-            <div class="floor-title">Ruang Isolasi</div>
-            <div class="room-grid">
-                @include('partials.kiosk-room-card', ['room' => $slide['isolation'], 'isolation' => true])
             </div>
         @else
             <div class="floor-title">{{ str_replace('Lantai', 'Floor', $slide['floor']->name) }}</div>

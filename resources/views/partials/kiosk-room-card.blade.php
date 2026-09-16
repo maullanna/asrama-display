@@ -1,7 +1,7 @@
-@php $iso = $isolation ?? false; @endphp
+@php $iso = $room->is_isolation ?? false; @endphp
 <div class="room-card{{ $iso ? ' isolation-card' : '' }}">
     <div class="rhead">
-        <div class="rnum">{{ $iso ? 'ISOLASI' : 'ROOM '.$room->room_number }}</div>
+        <div class="rnum">{{ $iso ? 'ISOLASI ROOM' : 'ROOM '.$room->room_number }}</div>
         <div class="capocc">
             <div class="r"><span>Capacity</span><b>{{ $room->capacity }}</b></div>
             <div class="r"><span>Occupancy</span><b>{{ $room->occupancy }}</b></div>
@@ -22,7 +22,8 @@
         <div class="students">
             @foreach ($room->students as $student)
                 <div class="student status-{{ $student->status }}">
-                    @if ($student->photo_path)
+                    {{-- Foto hanya muncul kalau sudah fingerprint (present). Selain itu ikon abu-abu. --}}
+                    @if ($student->status === 'present' && $student->photo_path)
                         <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
                     @else
                         <div class="avatar">
@@ -32,15 +33,7 @@
                         </div>
                     @endif
                     <div class="name">{{ $student->name }}</div>
-                    <div class="time">
-                        @switch($student->status)
-                            @case('present') CI {{ $student->ci_time?->format('H:i') }} @break
-                            @case('sakit') SICK @break
-                            @case('izin') LEAVE @break
-                            @case('isolasi') ISOLASI @break
-                            @default &mdash;
-                        @endswitch
-                    </div>
+                    <div class="time">@if ($student->status === 'present') CI {{ $student->ci_time?->format('H:i') }} @endif</div>
                 </div>
             @endforeach
         </div>

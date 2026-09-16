@@ -354,16 +354,17 @@
             }
 
             // Polling halus tiap 10 detik: ambil kartu kamar terbaru, ganti tanpa reload.
-            async function refreshRooms() {
-                try {
-                    const res = await fetch('{{ route('kiosk.rooms') }}', { cache: 'no-store' });
-                    if (!res.ok) return;
-                    const html = await res.text();
-                    document.getElementById('rooms').innerHTML = html;
-                    updateAbnormalBar();
-                    showSlides(true); // tampilkan slide aktif saat ini tanpa animasi (anti-kedip)
-                } catch (e) { /* abaikan blip jaringan, coba lagi siklus berikutnya */ }
-            }
+           async function refreshRooms() {
+    try {
+        const res = await fetch('{{ route('kiosk.rooms') }}', { cache: 'no-store' });
+        if (!res.ok) return;
+        const html = await res.text();
+        document.getElementById('rooms').innerHTML = html;
+        updateAbnormalBar();
+        if (slideIndex >= getSlides().length) slideIndex = 0; // ← guard tambahan
+        showSlides(true);
+    } catch (e) { /* abaikan */ }
+}
             setInterval(refreshRooms, 10000);
             updateAbnormalBar(); // saat load awal
 

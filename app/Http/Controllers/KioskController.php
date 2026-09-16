@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Floor;
-use App\Models\Room;
 use App\Models\Student;
 use App\Models\Vocation;
 use Illuminate\Support\Carbon;
@@ -24,7 +23,6 @@ class KioskController extends Controller
             'today' => Carbon::today(),
             'reportQr' => $reportQr,
             'abnormal' => $this->abnormalList($floors),
-            'isolation' => $this->isolationRoom(),
             'vocations' => $this->vocations(),
         ]);
     }
@@ -39,7 +37,6 @@ class KioskController extends Controller
         return view('partials.kiosk-rooms', [
             'floors' => $floors,
             'abnormal' => $this->abnormalList($floors),
-            'isolation' => $this->isolationRoom(),
             'vocations' => $this->vocations(),
         ]);
     }
@@ -66,43 +63,6 @@ class KioskController extends Controller
         }
 
         return $grouped;
-    }
-
-    /**
-     * Ruang isolasi + penghuninya (mahasiswa dengan kondisi 'isolasi' aktif hari ini).
-     * Mengembalikan objek Room ber-relasi students (yang diisolasi), atau null bila
-     * belum ada kamar yang ditandai sebagai ruang isolasi.
-     */
-    private function isolationRoom(): ?Room
-    {
-        $room = Room::where('is_isolation', true)->with('floor')->first();
-        if (! $room) {
-            return null;
-        }
-
-        $today = Carbon::today();
-        $activeIsolation = fn ($query) => $query->where('type', 'isolasi')
-            ->whereDate('start_date', '<=', $today)
-            ->where(fn ($q) => $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today));
-
-        $students = Student::query()
-            ->where('is_active', true)
-            ->whereHas('conditions', $activeIsolation)
-            ->with(['conditions' => $activeIsolation])
-            ->orderBy('name')
-            ->get();
-
-        foreach ($students as $student) {
-            $student->condition = $student->conditions->first();
-            $student->ci_time = null;
-            $student->status = 'isolasi';
-        }
-
-        $room->setRelation('students', $students);
-        $room->occupancy = $students->count();
-        $room->students_with_condition = $students;
-
-        return $room;
     }
 
     /**
@@ -144,6 +104,24 @@ class KioskController extends Controller
     {
         $today = Carbon::today();
 
+        // Mahasiswa yang sedang isolasi (kondisi 'isolasi' aktif hari ini) -> penghuni ruang isolasi.
+        $activeIsolation = fn ($query) => $query->where('type', 'isolasi')
+            ->whereDate('start_date', '<=', $today)
+            ->where(fn ($q) => $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today));
+
+        $isolationStudents = Student::query()
+            ->where('is_active', true)
+            ->whereHas('conditions', $activeIsolation)
+            ->with(['conditions' => $activeIsolation])
+            ->orderBy('name')
+            ->get();
+
+        foreach ($isolationStudents as $student) {
+            $student->condition = $student->conditions->first();
+            $student->ci_time = null;
+            $student->status = 'isolasi';
+        }
+
         $floors = Floor::with([
             'rooms' => fn ($query) => $query->orderBy('sort_order'),
             'rooms.students' => fn ($query) => $query->where('is_active', true)->orderBy('name'),
@@ -154,6 +132,15 @@ class KioskController extends Controller
 
         foreach ($floors as $floor) {
             foreach ($floor->rooms as $room) {
+                // Ruang isolasi: penghuni diambil dari kondisi isolasi (bukan dari room_id).
+                if ($room->is_isolation) {
+                    $room->setRelation('students', $isolationStudents);
+                    $room->occupancy = $isolationStudents->count();
+                    $room->students_with_condition = collect();
+
+                    continue;
+                }
+
                 foreach ($room->students as $student) {
                     $condition = $student->conditions->first();
                     $lastCi = $student->attendanceLogs->where('direction', 'ci')->last();
@@ -161,9 +148,9 @@ class KioskController extends Controller
                     $student->condition = $condition;
                     $student->ci_time = $lastCi?->scanned_at;
 
-                    // Status: kondisi (sakit/izin) menang; lalu hadir (sudah CI); sisanya belum absen.
+                    // Status: kondisi (sakit/izin/isolasi) menang; lalu hadir (sudah CI); sisanya belum absen.
                     $student->status = $condition
-                        ? $condition->type              // 'sakit' | 'izin'
+                        ? $condition->type
                         : ($lastCi ? 'present' : 'absent');
                 }
 
@@ -171,13 +158,13 @@ class KioskController extends Controller
                 $room->students_with_condition = $room->students->whereNotNull('condition')->values();
             }
 
-            // Hanya tampilkan kamar yang sudah ada mahasiswanya.
+            // Tampilkan kamar yang sudah ada mahasiswanya; ruang isolasi selalu tampil.
             $floor->setRelation('rooms', $floor->rooms->filter(
-                fn ($room) => $room->students->isNotEmpty()
+                fn ($room) => $room->is_isolation || $room->students->isNotEmpty()
             )->values());
         }
 
-        // Hanya tampilkan lantai yang punya minimal satu kamar berisi mahasiswa.
+        // Hanya tampilkan lantai yang punya minimal satu kamar tampil.
         return $floors->filter(fn ($floor) => $floor->rooms->isNotEmpty())->values();
     }
 }

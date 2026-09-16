@@ -116,16 +116,17 @@
             .student.status-isolasi .avatar { border-color: #8b5cf6; }
             .student.status-isolasi .time { color: #7c3aed; }
 
+            /* Summary kontekstual di header (disalin dari slide aktif via JS) */
+            #header-summary { display: flex; align-items: center; gap: 16px; color: #fff; }
+            #header-summary .hs-title { font-weight: 800; font-size: 14px; letter-spacing: 1px; padding-right: 14px; border-right: 1px solid rgba(255,255,255,0.28); }
+            #header-summary .hs-stat { display: flex; flex-direction: column; align-items: center; line-height: 1.05; }
+            #header-summary .hs-stat b { font-size: 17px; }
+            #header-summary .hs-stat span { font-size: 9.5px; opacity: 0.82; margin-top: 1px; }
+            #header-summary .hs-total b { color: #ffe08a; }
+            .slide-summary { display: none; }   /* pembawa data, disalin ke header */
+
             /* Slide VOKASI (mahasiswa A10 di luar), dikelompokkan per lokasi */
-            .vok-wrap { display: flex; flex-direction: column; height: 100%; gap: 10px; }
-            .vok-summary { align-self: flex-start; display: flex; border: 1.5px solid #0b1f4d; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
-            .vok-sum-label { writing-mode: vertical-rl; transform: rotate(180deg); background: #dbe3f0; color: #0b1f4d; font-weight: 800; font-size: 11px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; padding: 4px; }
-            .vok-sum-table { border-collapse: collapse; font-size: 11px; }
-            .vok-sum-table th { background: #0b1f4d; color: #fff; padding: 3px 16px; font-weight: 700; }
-            .vok-sum-table td { border: 1px solid #cbd5e1; padding: 2px 16px; text-align: center; }
-            .vok-sum-table td.lbl { font-weight: 600; background: #f1f5f9; text-align: left; }
-            .vok-sum-table tr.total td { font-weight: 800; background: #eef2f8; }
-            .vok-page { flex: 1; min-height: 0; display: flex; gap: 10px; }
+            .vok-page { display: flex; gap: 10px; height: 100%; }
             .vok-title {
                 writing-mode: vertical-rl; transform: rotate(180deg);
                 background: #dbe3f0; color: #0b1f4d; font-weight: 800; font-size: 22px; letter-spacing: 3px;
@@ -297,6 +298,8 @@
                 <h1>Dormitory Room Occupation</h1>
             </div>
 
+            <div id="header-summary"></div>
+
             <div class="header-right">
                 <div class="datetime">
                     <div id="live-date">{{ $today->format('l, d F Y') }}</div>
@@ -405,10 +408,19 @@
                 const rooms = document.getElementById('rooms');
                 if (instant) rooms.classList.add('no-anim');
                 slides.forEach((s, i) => s.classList.toggle('active', i === slideIndex));
+                updateHeaderSummary();
                 if (instant) {
                     // lepas 'no-anim' setelah 2 frame agar perubahan berikutnya beranimasi
                     requestAnimationFrame(() => requestAnimationFrame(() => rooms.classList.remove('no-anim')));
                 }
+            }
+
+            // Salin summary dari slide aktif ke header (kontekstual: Floor 1/2/Vokasi).
+            function updateHeaderSummary() {
+                const target = document.getElementById('header-summary');
+                if (!target) return;
+                const active = document.querySelector('#rooms .slide.active .slide-summary');
+                target.innerHTML = active ? active.innerHTML : '';
             }
 
             function nextSlide() {

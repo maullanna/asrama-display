@@ -1,14 +1,13 @@
 <script type="application/json" id="abnormal-json">@json($abnormal ?? [])</script>
 @php
-    // Susun "slide": tiap lantai (maks 10 kamar per slide). Ruang isolasi kini
-    // menjadi salah satu kartu di dalam grid lantainya (bukan slide terpisah).
+    // Slide: tiap lantai (maks 10 kamar/slide, lantai yang lebih tetap di slide lantai
+    // yang sama). Slide terakhir: VOKASI.
     $slides = collect();
     foreach ($floors as $floor) {
         foreach ($floor->rooms->chunk(10) as $chunk) {
             $slides->push(['floor' => $floor, 'rooms' => $chunk]);
         }
     }
-    // Slide terakhir: VOKASI (mahasiswa A10 di luar), bila ada.
     if (! empty($vocations)) {
         $slides->push(['vocations' => $vocations]);
     }
@@ -16,23 +15,16 @@
 @forelse ($slides as $i => $slide)
     <div class="slide{{ $i === 0 ? ' active' : '' }}">
         @if (isset($slide['vocations']))
-            <div class="vok-wrap">
-                @if (! empty($vocationSummary))
-                    <div class="vok-summary">
-                        <div class="vok-sum-label">Summary</div>
-                        <table class="vok-sum-table">
-                            <thead><tr><th colspan="3">Vokasi</th></tr></thead>
-                            <tbody>
-                                @foreach ($vocationSummary['rows'] as $r)
-                                    <tr><td class="lbl">{{ $r['label'] }}</td><td>{{ $r['count'] }}</td><td>{{ $r['pct'] }}%</td></tr>
-                                @endforeach
-                                <tr class="total"><td class="lbl">Total</td><td>{{ $vocationSummary['total'] }}</td><td>100%</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
-                <div class="vok-page">
-                    <div class="vok-title">VOKASI</div>
+            {{-- Summary VOKASI (disalin JS ke header saat slide ini aktif) --}}
+            <div class="slide-summary">
+                <span class="hs-title">VOKASI</span>
+                @foreach ($vocationSummary['rows'] ?? [] as $r)
+                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }}</span></span>
+                @endforeach
+                <span class="hs-stat hs-total"><b>{{ $vocationSummary['total'] ?? 0 }}</b><span>Total</span></span>
+            </div>
+            <div class="vok-page">
+                <div class="vok-title">VOKASI</div>
                 <div class="vok-groups">
                     @foreach ($slide['vocations'] as $group)
                         <div class="vok-group">
@@ -56,10 +48,18 @@
                         </div>
                     @endforeach
                 </div>
-                </div>
             </div>
         @else
-            <div class="floor-title">{{ str_replace('Lantai', 'Floor', $slide['floor']->name) }}</div>
+            @php $fname = str_replace('Lantai', 'Floor', $slide['floor']->name); @endphp
+            {{-- Summary lantai (disalin JS ke header saat slide ini aktif) --}}
+            <div class="slide-summary">
+                <span class="hs-title">{{ strtoupper($fname) }}</span>
+                @foreach ($slide['floor']->summary['rows'] as $r)
+                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }}</span></span>
+                @endforeach
+                <span class="hs-stat hs-total"><b>{{ $slide['floor']->summary['total'] }}</b><span>Total</span></span>
+            </div>
+            <div class="floor-title">{{ $fname }}</div>
             <div class="room-grid">
                 @foreach ($slide['rooms'] as $room)
                     @include('partials.kiosk-room-card', ['room' => $room])

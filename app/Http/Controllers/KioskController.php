@@ -186,6 +186,23 @@ class KioskController extends Controller
                 $room->students_with_condition = $room->students->whereNotNull('condition')->values();
             }
 
+            // Ringkasan lantai (dari kamar non-isolasi agar tidak dobel hitung).
+            $members = $floor->rooms->reject(fn ($room) => $room->is_isolation)
+                ->flatMap(fn ($room) => $room->students);
+            $present = $members->where('status', 'present')->count();
+            $absent = $members->where('status', 'absent')->count();
+            $total = $members->count();
+            $rows = [
+                ['label' => 'Hadir', 'count' => $present],
+                ['label' => 'Belum Absen', 'count' => $absent],
+                ['label' => 'Izin/Sakit', 'count' => max(0, $total - $present - $absent)],
+            ];
+            foreach ($rows as &$row) {
+                $row['pct'] = $total > 0 ? (int) round($row['count'] / $total * 100) : 0;
+            }
+            unset($row);
+            $floor->summary = ['rows' => $rows, 'total' => $total];
+
             // Tampilkan kamar yang sudah ada mahasiswanya; ruang isolasi selalu tampil.
             $floor->setRelation('rooms', $floor->rooms->filter(
                 fn ($room) => $room->is_isolation || $room->students->isNotEmpty()

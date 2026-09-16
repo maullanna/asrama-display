@@ -112,6 +112,10 @@
             /* Ruang isolasi: kartu & status khusus */
             .isolation-card { border-color: #b91c1c; }
             .isolation-card .rhead { background: #b91c1c; }
+            /* Isolasi maksimal 2 orang -> 2 kotak foto besar (bukan grid 4 kolom yang kecil) */
+            .isolation-card .students { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .isolation-card .student .name { font-size: 11px; }
+            .isolation-card .student .bed { font-size: 10px; }
             .rhead .iso-lbl { text-transform: none; }
             .student.status-isolasi .avatar { border-color: #8b5cf6; }
             .student.status-isolasi .time { color: #7c3aed; }

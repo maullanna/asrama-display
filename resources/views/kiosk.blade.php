@@ -150,7 +150,7 @@
             }
             .vok-groups { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
             /* Grup kecil (mis. Sunter): setinggi isi + ruang napas ~1 baris. Grup terbanyak (vok-fill) isi sisa. */
-            .vok-group { flex: 0 0 auto; min-height: 165px; display: flex; gap: 10px; border: 1.5px solid #0b1f4d; border-radius: 7px; overflow: hidden; background: #fff; }
+            .vok-group { flex: 0 0 auto; min-height: 84px; display: flex; gap: 10px; border: 1.5px solid #0b1f4d; border-radius: 7px; overflow: hidden; background: #fff; }
             .vok-group.vok-fill { flex: 1 1 auto; min-height: 0; }
             .vok-loc {
                 writing-mode: vertical-rl; transform: rotate(180deg);

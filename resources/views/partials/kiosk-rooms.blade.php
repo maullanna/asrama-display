@@ -32,7 +32,7 @@
                 <div class="vok-title">VOKASI</div>
                 <div class="vok-groups">
                     @foreach ($slide['vocations'] as $group)
-                        <div class="vok-group">
+                        <div class="vok-group" style="flex: {{ max(1, $group['students']->count()) }} 1 0;">
                             <div class="vok-loc">{{ strtoupper($group['label']) }}</div>
                             <div class="vok-grid">
                                 @foreach ($group['students'] as $v)

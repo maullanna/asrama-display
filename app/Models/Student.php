@@ -13,6 +13,7 @@ class Student extends Model
         'student_code',
         'device_pin',
         'name',
+        'bed_number',
         'photo_path',
         'is_room_leader',
         'is_active',

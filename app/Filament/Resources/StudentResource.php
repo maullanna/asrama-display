@@ -56,6 +56,10 @@ class StudentResource extends Resource
                     ->label('Nama')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('bed_number')
+                    ->label('Nomor Kasur / Bed')
+                    ->helperText('Tampil di atas foto pada layar kiosk. Contoh: Bed 1.1')
+                    ->maxLength(30),
                 Forms\Components\FileUpload::make('photo_path')
                     ->label('Foto')
                     ->image()
@@ -83,6 +87,10 @@ class StudentResource extends Resource
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('bed_number')
+                    ->label('Kasur')
+                    ->searchable()
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('student_code')
                     ->label('NIM')
                     ->searchable(),

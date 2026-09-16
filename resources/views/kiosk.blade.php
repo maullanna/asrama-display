@@ -117,20 +117,21 @@
             .student.status-isolasi .time { color: #7c3aed; }
 
             /* Summary kontekstual di header (disalin dari slide aktif via JS) — bertabel/border */
-            #header-summary { display: flex; align-items: stretch; height: 40px; color: #fff;
-                border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; overflow: hidden;
-                background: rgba(255,255,255,0.06); }
+            #header-summary { display: flex; align-items: center; }
             #header-summary:empty { display: none; }
-            #header-summary .hs-title { display: flex; align-items: center; padding: 0 10px;
-                background: rgba(255,255,255,0.14); font-weight: 800; font-size: 10px; letter-spacing: .5px;
-                border-right: 1px solid rgba(255,255,255,0.3); }
-            #header-summary .hs-stat { display: flex; flex-direction: column; align-items: center; justify-content: center;
-                padding: 0 9px; border-right: 1px solid rgba(255,255,255,0.18); line-height: 1; }
-            #header-summary .hs-stat:last-child { border-right: none; }
-            #header-summary .hs-stat b { font-size: 13px; }
-            #header-summary .hs-stat span { font-size: 7px; opacity: 0.8; margin-top: 2px; white-space: nowrap; }
-            #header-summary .hs-total { background: rgba(255,224,138,0.14); }
-            #header-summary .hs-total b { color: #ffe08a; }
+            /* Tabel ringkasan gaya "Summary | Vokasi" (label vertikal + baris nilai) */
+            .hs-table { border-collapse: collapse; background: #fff; color: #0b1f4d;
+                font-size: 8px; line-height: 1; border: 1.5px solid #0b1f4d; }
+            .hs-table td { border: 1px solid #9fb2d6; padding: 1.5px 7px; white-space: nowrap; }
+            .hs-table .hs-side { writing-mode: vertical-rl; transform: rotate(180deg);
+                background: #0b1f4d; color: #fff; font-weight: 800; letter-spacing: 1px;
+                text-align: center; border-color: #0b1f4d; }
+            .hs-table .hs-cap { background: #0b1f4d; color: #fff; font-weight: 800; text-align: center;
+                letter-spacing: .5px; border-color: #0b1f4d; }
+            .hs-table .hs-lbl { font-weight: 700; text-align: left; }
+            .hs-table .hs-val { font-weight: 800; text-align: right; }
+            .hs-table .hs-total { background: #fff6db; }
+            .hs-table .hs-total .hs-val { color: #b8860b; }
             .slide-summary { display: none; }   /* pembawa data, disalin ke header */
 
             /* Slide VOKASI (mahasiswa A10 di luar), dikelompokkan per lokasi */
@@ -184,6 +185,21 @@
             }
 
             .student { text-align: center; min-width: 0; }
+
+            .student .bed {
+                font-size: 8.5px;
+                font-weight: 800;
+                letter-spacing: .3px;
+                color: #0b1f4d;
+                background: #e6ecf7;
+                border: 1px solid #c3d0ea;
+                border-radius: 4px;
+                padding: 1px 3px;
+                margin-bottom: 3px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
 
             .avatar {
                 width: 100%;

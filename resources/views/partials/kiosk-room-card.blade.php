@@ -22,6 +22,9 @@
         <div class="students">
             @foreach ($room->students as $student)
                 <div class="student status-{{ $student->status }}">
+                    @if (! empty($student->bed_number))
+                        <div class="bed">{{ $student->bed_number }}</div>
+                    @endif
                     {{-- Foto hanya muncul kalau sudah fingerprint (present). Selain itu ikon abu-abu. --}}
                     @if ($student->status === 'present' && $student->photo_path)
                         <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">

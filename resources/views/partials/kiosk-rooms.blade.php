@@ -17,11 +17,16 @@
         @if (isset($slide['vocations']))
             {{-- Summary VOKASI (disalin JS ke header saat slide ini aktif) --}}
             <div class="slide-summary">
-                <span class="hs-title">VOKASI</span>
-                @foreach ($vocationSummary['rows'] ?? [] as $r)
-                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }} &middot; {{ $r['pct'] }}%</span></span>
-                @endforeach
-                <span class="hs-stat hs-total"><b>{{ $vocationSummary['total'] ?? 0 }}</b><span>Total &middot; 100%</span></span>
+                <table class="hs-table">
+                    <tr>
+                        <td class="hs-side" rowspan="{{ count($vocationSummary['rows'] ?? []) + 2 }}">Summary</td>
+                        <td class="hs-cap" colspan="2">VOKASI</td>
+                    </tr>
+                    @foreach ($vocationSummary['rows'] ?? [] as $r)
+                        <tr><td class="hs-lbl">{{ $r['label'] }}</td><td class="hs-val">{{ $r['count'] }} &middot; {{ $r['pct'] }}%</td></tr>
+                    @endforeach
+                    <tr class="hs-total"><td class="hs-lbl">Total</td><td class="hs-val">{{ $vocationSummary['total'] ?? 0 }} &middot; 100%</td></tr>
+                </table>
             </div>
             <div class="vok-page">
                 <div class="vok-title">VOKASI</div>
@@ -53,11 +58,16 @@
             @php $fname = str_replace('Lantai', 'Floor', $slide['floor']->name); @endphp
             {{-- Summary lantai (disalin JS ke header saat slide ini aktif) --}}
             <div class="slide-summary">
-                <span class="hs-title">{{ strtoupper($fname) }}</span>
-                @foreach ($slide['floor']->summary['rows'] as $r)
-                    <span class="hs-stat"><b>{{ $r['count'] }}</b><span>{{ $r['label'] }} &middot; {{ $r['pct'] }}%</span></span>
-                @endforeach
-                <span class="hs-stat hs-total"><b>{{ $slide['floor']->summary['total'] }}</b><span>Total &middot; 100%</span></span>
+                <table class="hs-table">
+                    <tr>
+                        <td class="hs-side" rowspan="{{ count($slide['floor']->summary['rows']) + 2 }}">Summary</td>
+                        <td class="hs-cap" colspan="2">{{ strtoupper($fname) }}</td>
+                    </tr>
+                    @foreach ($slide['floor']->summary['rows'] as $r)
+                        <tr><td class="hs-lbl">{{ $r['label'] }}</td><td class="hs-val">{{ $r['count'] }} &middot; {{ $r['pct'] }}%</td></tr>
+                    @endforeach
+                    <tr class="hs-total"><td class="hs-lbl">Total</td><td class="hs-val">{{ $slide['floor']->summary['total'] }} &middot; 100%</td></tr>
+                </table>
             </div>
             <div class="floor-title">{{ $fname }}</div>
             <div class="room-grid">

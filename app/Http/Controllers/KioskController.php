@@ -209,10 +209,8 @@ class KioskController extends Controller
             unset($row);
             $floor->summary = ['rows' => $rows, 'total' => $total];
 
-            // Tampilkan kamar yang sudah ada mahasiswanya; ruang isolasi selalu tampil.
-            $floor->setRelation('rooms', $floor->rooms->filter(
-                fn ($room) => $room->is_isolation || $room->students->isNotEmpty()
-            )->values());
+            // Tampilkan semua kamar yang sudah dibuat (walau belum ada mahasiswanya -> slot kosong).
+            $floor->setRelation('rooms', $floor->rooms->values());
         }
 
         // Hanya tampilkan lantai yang punya minimal satu kamar tampil.

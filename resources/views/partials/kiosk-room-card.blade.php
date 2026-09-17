@@ -21,9 +21,15 @@
     <div class="room-body">
         @php
             // Ruang isolasi: selalu tampilkan slot sebanyak kapasitas (2), terisi/kosong.
-            $slots = $iso
-                ? collect(range(0, max(1, (int) $room->capacity ?: 2) - 1))->map(fn ($i) => $room->students->get($i))
-                : $room->students;
+            if ($iso) {
+                $cap = max(1, (int) $room->capacity ?: 2);
+                $slots = collect(range(0, $cap - 1))->map(fn ($i) => $room->students->get($i));
+            } elseif ($room->students->isEmpty() && (int) $room->capacity > 0) {
+                // Kamar sudah dibuat tapi belum ada mahasiswa -> slot kosong sejumlah kapasitas (tanpa nama).
+                $slots = collect(range(1, (int) $room->capacity))->map(fn () => null);
+            } else {
+                $slots = $room->students;
+            }
         @endphp
         <div class="students">
             @foreach ($slots as $student)
@@ -50,14 +56,14 @@
                         </div>
                     </div>
                 @else
-                    {{-- Bed kosong (belum ada pasien isolasi) --}}
+                    {{-- Slot kosong: ruang isolasi diberi label "Empty"; kamar biasa tanpa nama. --}}
                     <div class="student status-empty">
                         <div class="avatar">
                             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.34 0-10 1.67-10 5v2h20v-2c0-3.33-6.66-5-10-5z"/>
                             </svg>
                         </div>
-                        <div class="name">Empty</div>
+                        <div class="name">{{ $iso ? 'Empty' : '' }}</div>
                         <div class="time"></div>
                     </div>
                 @endif

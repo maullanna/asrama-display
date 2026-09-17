@@ -61,8 +61,9 @@
             #rooms.no-anim .slide { transition: none !important; }
             #rooms.has-alert .slide { padding-bottom: 72px; }
 
-            /* Wrapper konten slide lantai: diperkecil otomatis via JS agar muat penuh di layar TV */
-            .slide-fit { transform-origin: top center; }
+            /* Wrapper konten slide lantai: diperkecil otomatis via JS agar muat penuh di layar TV.
+               Anchor kiri-atas supaya saat diperkecil tetap rata kiri (tidak center). */
+            .slide-fit { transform-origin: top left; }
 
             /* Tombol navigasi manual (back/next) untuk presentasi */
             .nav-btn {

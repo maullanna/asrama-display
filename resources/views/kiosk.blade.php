@@ -64,6 +64,20 @@
             /* Wrapper konten slide lantai: diperkecil otomatis via JS agar muat penuh di layar TV */
             .slide-fit { transform-origin: top center; }
 
+            /* Tombol navigasi manual (back/next) untuk presentasi */
+            .nav-btn {
+                position: fixed; top: 50%; transform: translateY(-50%); z-index: 60;
+                width: 46px; height: 66px; border: none; border-radius: 8px;
+                background: rgba(11, 31, 77, 0.55); color: #fff;
+                font-size: 34px; font-weight: 700; line-height: 1; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                opacity: 0.30; transition: opacity .2s, background .2s;
+            }
+            .nav-btn:hover { opacity: 1; background: rgba(11, 31, 77, 0.9); }
+            .nav-btn.hidden { display: none; }
+            #nav-prev { left: 12px; }
+            #nav-next { right: 12px; }
+
             .floor-title {
                 font-size: 15px;
                 font-weight: 700;
@@ -365,6 +379,10 @@
             <div class="sub" id="abnormal-flash-sub"></div>
         </div>
 
+        <!-- Navigasi manual slide (presentasi): back / next -->
+        <button id="nav-prev" class="nav-btn" aria-label="Slide sebelumnya" title="Sebelumnya (&larr;)">&#8249;</button>
+        <button id="nav-next" class="nav-btn" aria-label="Slide berikutnya" title="Berikutnya (&rarr;)">&#8250;</button>
+
         <script>
             // Jam berjalan (client-side).
             function tick() {
@@ -448,6 +466,7 @@
                 slides.forEach((s, i) => s.classList.toggle('active', i === slideIndex));
                 updateHeaderSummary();
                 fitActiveSlide();
+                updateNavButtons();
                 if (instant) {
                     // lepas 'no-anim' setelah 2 frame agar perubahan berikutnya beranimasi
                     requestAnimationFrame(() => requestAnimationFrame(() => rooms.classList.remove('no-anim')));
@@ -486,8 +505,38 @@
                 showSlides(false);
             }
 
+            function prevSlide() {
+                const slides = getSlides();
+                if (slides.length <= 1) return;
+                slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+                showSlides(false);
+            }
+
+            // Timer auto-slide yang bisa di-reset saat navigasi manual.
+            let slideTimer = null;
+            function startAutoSlide() {
+                clearInterval(slideTimer);
+                slideTimer = setInterval(nextSlide, SLIDE_INTERVAL);
+            }
+
+            // Sembunyikan tombol navigasi bila cuma ada 1 slide.
+            function updateNavButtons() {
+                const many = getSlides().length > 1;
+                document.getElementById('nav-prev').classList.toggle('hidden', !many);
+                document.getElementById('nav-next').classList.toggle('hidden', !many);
+            }
+
+            // Navigasi manual: pindah slide lalu reset timer agar tidak langsung lompat.
+            document.getElementById('nav-prev').addEventListener('click', () => { prevSlide(); startAutoSlide(); });
+            document.getElementById('nav-next').addEventListener('click', () => { nextSlide(); startAutoSlide(); });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prevSlide(); startAutoSlide(); }
+                else if (e.key === 'ArrowRight' || e.key === 'PageDown') { nextSlide(); startAutoSlide(); }
+            });
+
             showSlides(true);                    // tampilkan slide pertama saat load
-            setInterval(nextSlide, SLIDE_INTERVAL);
+            updateNavButtons();
+            startAutoSlide();
         </script>
     </body>
 </html>

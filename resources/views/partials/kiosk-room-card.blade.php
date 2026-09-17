@@ -34,7 +34,7 @@
                         @endif
                         {{-- Foto muncul kalau sudah fingerprint (present/keluar). Selain itu ikon abu-abu. --}}
                         @if (in_array($student->status, ['present', 'checkout']) && $student->photo_path)
-                            <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
+                            <img class="avatar" src="{{ asset('storage/'.$student->photo_thumb) }}" alt="{{ $student->name }}" decoding="async">
                         @else
                             <div class="avatar">
                                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

@@ -74,6 +74,7 @@
                 opacity: 0.30; transition: opacity .2s, background .2s;
             }
             .nav-btn:hover { opacity: 1; background: rgba(11, 31, 77, 0.9); }
+            .nav-btn:focus { opacity: 1; background: rgba(11, 31, 77, 0.95); outline: 4px solid #ffd54a; }
             .nav-btn.hidden { display: none; }
             #nav-prev { left: 12px; }
             #nav-next { right: 12px; }
@@ -379,9 +380,9 @@
             <div class="sub" id="abnormal-flash-sub"></div>
         </div>
 
-        <!-- Navigasi manual slide (presentasi): back / next -->
-        <button id="nav-prev" class="nav-btn" aria-label="Slide sebelumnya" title="Sebelumnya (&larr;)">&#8249;</button>
-        <button id="nav-next" class="nav-btn" aria-label="Slide berikutnya" title="Berikutnya (&rarr;)">&#8250;</button>
+        <!-- Navigasi manual slide (presentasi): back / next. tabindex agar bisa difokus remote TV -->
+        <button id="nav-prev" class="nav-btn" tabindex="0" aria-label="Slide sebelumnya" title="Sebelumnya (&larr;)">&#8249;</button>
+        <button id="nav-next" class="nav-btn" tabindex="0" aria-label="Slide berikutnya" title="Berikutnya (&rarr;)">&#8250;</button>
 
         <script>
             // Jam berjalan (client-side).
@@ -420,19 +421,23 @@
                 rooms.classList.add('has-alert');
             }
 
-            // Polling halus tiap 10 detik: ambil kartu kamar terbaru, ganti tanpa reload.
-           async function refreshRooms() {
-    try {
-        const res = await fetch('{{ route('kiosk.rooms') }}', { cache: 'no-store' });
-        if (!res.ok) return;
-        const html = await res.text();
-        document.getElementById('rooms').innerHTML = html;
-        updateAbnormalBar();
-        if (slideIndex >= getSlides().length) slideIndex = 0; // ← guard tambahan
-        showSlides(true);
-    } catch (e) { /* abaikan */ }
-}
-            setInterval(refreshRooms, 10000);
+            // Polling: ambil kartu kamar terbaru. Hanya ganti DOM bila HTML berubah,
+            // supaya foto tidak ter-reload terus-menerus (ringan di TV).
+            let lastRoomsHtml = null;
+            async function refreshRooms() {
+                try {
+                    const res = await fetch('{{ route('kiosk.rooms') }}', { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const html = await res.text();
+                    if (html === lastRoomsHtml) return;   // data sama -> jangan sentuh DOM/gambar
+                    lastRoomsHtml = html;
+                    document.getElementById('rooms').innerHTML = html;
+                    updateAbnormalBar();
+                    if (slideIndex >= getSlides().length) slideIndex = 0;
+                    showSlides(true);
+                } catch (e) { /* abaikan */ }
+            }
+            setInterval(refreshRooms, 30000);
             updateAbnormalBar(); // saat load awal
 
             // Flash besar berkala tiap 30 detik bila ada abnormal (muncul ~6 detik).
@@ -529,14 +534,26 @@
             // Navigasi manual: pindah slide lalu reset timer agar tidak langsung lompat.
             document.getElementById('nav-prev').addEventListener('click', () => { prevSlide(); startAutoSlide(); });
             document.getElementById('nav-next').addEventListener('click', () => { nextSlide(); startAutoSlide(); });
+
+            // Remote TV: D-pad sering mengirim panah/PageUp-Down/media sebagai keydown.
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prevSlide(); startAutoSlide(); }
-                else if (e.key === 'ArrowRight' || e.key === 'PageDown') { nextSlide(); startAutoSlide(); }
+                const k = e.key;
+                const c = e.keyCode || e.which;
+                const goPrev = k === 'ArrowLeft' || k === 'PageUp' || k === 'MediaTrackPrevious' || c === 37 || c === 33;
+                const goNext = k === 'ArrowRight' || k === 'PageDown' || k === 'MediaTrackNext' || c === 39 || c === 34;
+                if (goPrev) { e.preventDefault(); prevSlide(); startAutoSlide(); }
+                else if (goNext) { e.preventDefault(); nextSlide(); startAutoSlide(); }
             });
 
             showSlides(true);                    // tampilkan slide pertama saat load
             updateNavButtons();
             startAutoSlide();
+
+            // Auto-fokus tombol Next agar remote TV (D-pad + OK) bisa langsung memakainya.
+            const navNext = document.getElementById('nav-next');
+            if (navNext && !navNext.classList.contains('hidden')) {
+                try { navNext.focus(); } catch (e) { /* abaikan */ }
+            }
         </script>
     </body>
 </html>

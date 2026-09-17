@@ -70,11 +70,13 @@
                     <tr class="hs-total"><td class="hs-lbl">Total</td><td class="hs-val">{{ $slide['floor']->summary['total'] }} &middot; 100%</td></tr>
                 </table>
             </div>
-            <div class="floor-title">{{ $fname }}</div>
-            <div class="room-grid">
-                @foreach ($slide['rooms'] as $room)
-                    @include('partials.kiosk-room-card', ['room' => $room])
-                @endforeach
+            <div class="slide-fit">
+                <div class="floor-title">{{ $fname }}</div>
+                <div class="room-grid">
+                    @foreach ($slide['rooms'] as $room)
+                        @include('partials.kiosk-room-card', ['room' => $room])
+                    @endforeach
+                </div>
             </div>
         @endif
     </div>

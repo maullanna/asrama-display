@@ -61,6 +61,9 @@
             #rooms.no-anim .slide { transition: none !important; }
             #rooms.has-alert .slide { padding-bottom: 72px; }
 
+            /* Wrapper konten slide lantai: diperkecil otomatis via JS agar muat penuh di layar TV */
+            .slide-fit { transform-origin: top center; }
+
             .floor-title {
                 font-size: 15px;
                 font-weight: 700;
@@ -441,11 +444,29 @@
                 if (instant) rooms.classList.add('no-anim');
                 slides.forEach((s, i) => s.classList.toggle('active', i === slideIndex));
                 updateHeaderSummary();
+                fitActiveSlide();
                 if (instant) {
                     // lepas 'no-anim' setelah 2 frame agar perubahan berikutnya beranimasi
                     requestAnimationFrame(() => requestAnimationFrame(() => rooms.classList.remove('no-anim')));
                 }
             }
+
+            // Perkecil konten slide aktif agar muat penuh di layar TV (tak pernah kepotong).
+            function fitActiveSlide() {
+                const slide = document.querySelector('#rooms .slide.active');
+                if (!slide) return;
+                const fit = slide.querySelector('.slide-fit');
+                if (!fit) return;
+                fit.style.transform = '';
+                const cs = getComputedStyle(slide);
+                const availH = slide.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+                const contentH = fit.offsetHeight;
+                if (contentH > 0 && availH > 0 && contentH > availH) {
+                    fit.style.transform = 'scale(' + (availH / contentH) + ')';
+                }
+            }
+            let fitTimer;
+            window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitActiveSlide, 150); });
 
             // Salin summary dari slide aktif ke header (kontekstual: Floor 1/2/Vokasi).
             function updateHeaderSummary() {

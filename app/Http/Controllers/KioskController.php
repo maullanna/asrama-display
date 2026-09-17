@@ -198,10 +198,10 @@ class KioskController extends Controller
             $absent = $members->where('status', 'absent')->count();
             $total = $members->count();
             $rows = [
-                ['label' => 'Hadir', 'count' => $present],
-                ['label' => 'Keluar', 'count' => $checkout],
-                ['label' => 'Belum Absen', 'count' => $absent],
-                ['label' => 'Izin/Sakit', 'count' => max(0, $total - $present - $checkout - $absent)],
+                ['label' => 'Check In', 'count' => $present],
+                ['label' => 'Check Out', 'count' => $checkout],
+                ['label' => 'Absent', 'count' => $absent],
+                ['label' => 'Leave/Sick', 'count' => max(0, $total - $present - $checkout - $absent)],
             ];
             foreach ($rows as &$row) {
                 $row['pct'] = $total > 0 ? (int) round($row['count'] / $total * 100) : 0;

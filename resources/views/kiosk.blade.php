@@ -68,17 +68,17 @@
             /* Tombol navigasi manual (back/next) untuk presentasi */
             .nav-btn {
                 position: fixed; top: 50%; transform: translateY(-50%); z-index: 60;
-                width: 46px; height: 66px; border: none; border-radius: 8px;
+                width: 30px; height: 42px; border: none; border-radius: 6px;
                 background: rgba(11, 31, 77, 0.55); color: #fff;
-                font-size: 34px; font-weight: 700; line-height: 1; cursor: pointer;
+                font-size: 22px; font-weight: 700; line-height: 1; cursor: pointer;
                 display: flex; align-items: center; justify-content: center;
                 opacity: 0.30; transition: opacity .2s, background .2s;
             }
             .nav-btn:hover { opacity: 1; background: rgba(11, 31, 77, 0.9); }
-            .nav-btn:focus { opacity: 1; background: rgba(11, 31, 77, 0.95); outline: 4px solid #ffd54a; }
+            .nav-btn:focus { opacity: 1; background: rgba(11, 31, 77, 0.95); outline: 3px solid #ffd54a; }
             .nav-btn.hidden { display: none; }
-            #nav-prev { left: 12px; }
-            #nav-next { right: 12px; }
+            #nav-prev { left: 10px; }
+            #nav-next { right: 10px; }
 
             .floor-title {
                 font-size: 15px;

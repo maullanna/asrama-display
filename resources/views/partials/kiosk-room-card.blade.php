@@ -32,8 +32,8 @@
                         @if (! empty($student->bed_number))
                             <div class="bed">{{ $student->bed_number }}</div>
                         @endif
-                        {{-- Foto hanya muncul kalau sudah fingerprint (present). Selain itu ikon abu-abu. --}}
-                        @if ($student->status === 'present' && $student->photo_path)
+                        {{-- Foto muncul kalau sudah fingerprint (present/keluar). Selain itu ikon abu-abu. --}}
+                        @if (in_array($student->status, ['present', 'checkout']) && $student->photo_path)
                             <img class="avatar" src="{{ asset('storage/'.$student->photo_path) }}" alt="{{ $student->name }}">
                         @else
                             <div class="avatar">
@@ -43,7 +43,11 @@
                             </div>
                         @endif
                         <div class="name">{{ $student->name }}</div>
-                        <div class="time">@if ($student->status === 'present') CI {{ $student->ci_time?->format('H:i') }} @endif</div>
+                        <div class="time">
+                            @if ($student->status === 'present') CI {{ $student->ci_time?->format('H:i') }}
+                            @elseif ($student->status === 'checkout') CO {{ $student->ci_time?->format('H:i') }}
+                            @endif
+                        </div>
                     </div>
                 @else
                     {{-- Bed kosong (belum ada pasien isolasi) --}}

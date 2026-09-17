@@ -15,7 +15,8 @@ class AttendanceIngestor
      *   PIN \t YYYY-MM-DD HH:MM:SS \t status \t verify \t ...
      *
      * - PIN dicocokkan ke Student.device_pin (null bila belum terdaftar).
-     * - status 1 dianggap keluar (CO), selain itu masuk (CI).
+     * - Arah CI/CO ditentukan dari JAM scan (Check IN 19:00-02:00, Check OUT 04:00-06:00).
+     *   Di luar window: fallback ke tombol mesin (status 1 = CO, selain itu CI).
      * - updateOrCreate mencegah duplikat bila mesin mengirim ulang data lama.
      *
      * @return int Jumlah baris absensi yang berhasil diproses.
@@ -52,7 +53,9 @@ class AttendanceIngestor
 
             $student = Student::where('device_pin', $pin)->first();
 
-            $direction = $status === 1 ? 'co' : 'ci';
+            // Arah dari jam scan; di luar window pakai tombol mesin sebagai fallback.
+            $direction = AttendanceLog::directionForTime($scannedAt)
+                ?? ($status === 1 ? 'co' : 'ci');
 
             AttendanceLog::updateOrCreate(
                 [

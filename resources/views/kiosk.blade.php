@@ -229,6 +229,8 @@
 
             /* Sudah fingerprint (hadir) -> border hijau */
             .student.status-present .avatar { border-color: #16a34a; }
+            /* Sudah check-out (keluar) -> border biru */
+            .student.status-checkout .avatar { border-color: #2563eb; }
 
             .student .name {
                 font-size: 9px;
@@ -240,6 +242,7 @@
 
             .student .time { font-size: 10px; font-weight: 700; color: #94a3b8; }
             .student.status-present .time { color: #16a34a; }
+            .student.status-checkout .time { color: #2563eb; }
             .student.status-sakit .time { color: #dc2626; }
             .student.status-izin .time { color: #d97706; }
 

@@ -171,15 +171,19 @@ class KioskController extends Controller
 
                 foreach ($room->students as $student) {
                     $condition = $student->conditions->first();
-                    $lastCi = $student->attendanceLogs->where('direction', 'ci')->last();
+                    $lastLog = $student->attendanceLogs->last();   // scan terbaru hari ini
 
                     $student->condition = $condition;
-                    $student->ci_time = $lastCi?->scanned_at;
+                    $student->ci_time = $lastLog?->scanned_at;
+                    $student->direction = $lastLog?->direction;
 
-                    // Status: kondisi (sakit/izin/isolasi) menang; lalu hadir (sudah CI); sisanya belum absen.
+                    // Status: kondisi (sakit/izin/isolasi) menang; lalu arah scan terbaru
+                    // (CO -> sudah keluar, CI -> hadir); tanpa scan -> belum absen.
                     $student->status = $condition
                         ? $condition->type
-                        : ($lastCi ? 'present' : 'absent');
+                        : ($lastLog
+                            ? ($lastLog->direction === 'co' ? 'checkout' : 'present')
+                            : 'absent');
                 }
 
                 $room->occupancy = $room->students->where('status', 'present')->count();
@@ -190,12 +194,14 @@ class KioskController extends Controller
             $members = $floor->rooms->reject(fn ($room) => $room->is_isolation)
                 ->flatMap(fn ($room) => $room->students);
             $present = $members->where('status', 'present')->count();
+            $checkout = $members->where('status', 'checkout')->count();
             $absent = $members->where('status', 'absent')->count();
             $total = $members->count();
             $rows = [
                 ['label' => 'Hadir', 'count' => $present],
+                ['label' => 'Keluar', 'count' => $checkout],
                 ['label' => 'Belum Absen', 'count' => $absent],
-                ['label' => 'Izin/Sakit', 'count' => max(0, $total - $present - $absent)],
+                ['label' => 'Izin/Sakit', 'count' => max(0, $total - $present - $checkout - $absent)],
             ];
             foreach ($rows as &$row) {
                 $row['pct'] = $total > 0 ? (int) round($row['count'] / $total * 100) : 0;
